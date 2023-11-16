@@ -420,53 +420,7 @@ accessUser_Mac_Adress = [
     """
             )
 
-    # 다운로드 및 실행 함수
-    def download_and_execute(self, remote_version):
-        """# 원격 .exe 파일 URL
-        remote_exe_url = 'http://ns.hakumata.world/tennisHelper/tennisHelper.exe'
 
-        # 다운로드할 파일 경로
-        local_exe_path = f'tennisHelper_v{remote_version}.exe'
-
-        # 파일 다운로드
-        response = requests.get(remote_exe_url)
-        with open(local_exe_path, 'wb') as file:
-            file.write(response.content)
-
-        # 현재 실행 중인 애플리케이션 종료 및 새 버전 실행
-        QCoreApplication.quit()
-        # QProcess.startDetached(local_exe_path)"""
-
-        # 원격 .exe 파일 URL
-        url = "http://ns.hakumata.world/tennisHelper/tennisHelper.exe"
-        # 다운로드할 파일 경로
-        local_exe_path = f"tennisHelper_v{remote_version}.exe"
-
-        response = requests.get(url, stream=True)
-        total_length = response.headers.get("content-length")
-        if total_length is None:  # 서버가 콘텐츠 길이를 제공하지 않는 경우
-            with open(local_exe_path, "wb") as f:
-                f.write(response.content)
-        else:
-            dlg = QProgressDialog("업데이트 다운로드 중...", "취소", 0, int(total_length))
-            dlg.setWindowTitle("업데이트")
-            dlg.setModal(True)
-            dlg.show()
-
-            with open(local_exe_path, "wb") as f:
-                for data in response.iter_content(chunk_size=4096):
-                    f.write(data)
-                    dlg.setValue(f.tell())
-
-            dlg.close()
-            self.create_temporary_batch_file(local_exe_path)
-            QMessageBox.information(
-                None,
-                "업데이트 완료",
-                f"업데이트가 완료되었습니다.\ntenisHelper_v{remote_version}이 잠시 후 실행됩니다.",
-            )
-            subprocess.call(["update.bat"], shell=True)
-            sys.exit(1)
 
     def on_email_sent(self):
         # 이메일 전송이 완료되었을 때 수행할 작업
