@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>485</width>
-    <height>861</height>
+    <width>482</width>
+    <height>868</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -564,9 +564,9 @@
    <widget class="QLabel" name="coutionLbl">
     <property name="geometry">
      <rect>
-      <x>190</x>
-      <y>815</y>
-      <width>261</width>
+      <x>230</x>
+      <y>810</y>
+      <width>231</width>
       <height>20</height>
      </rect>
     </property>
@@ -587,7 +587,7 @@
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>795</y>
+      <y>790</y>
       <width>421</width>
       <height>20</height>
      </rect>
@@ -677,7 +677,7 @@
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>815</y>
+      <y>810</y>
       <width>131</width>
       <height>16</height>
      </rect>

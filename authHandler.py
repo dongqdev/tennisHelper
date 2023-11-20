@@ -29,3 +29,4 @@ class AuthHandler:
 #독립구문 테스트
 if __name__ == "__main__":
     auth_handler = AuthHandler().authUserCheck()
+    print(auth_handler)

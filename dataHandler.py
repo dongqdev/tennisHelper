@@ -4,10 +4,60 @@ import json
 import os
 import platform
 import socket
+import urllib
 import uuid
+from datetime import datetime, timedelta
+
+
 import mariadb
+import requests
+from PyQt6.QtCore import QTimer
 from PyQt6.QtWidgets import QMessageBox
+from PySide6.QtCore import QTime
 from cryptography.fernet import Fernet
+
+tennisCourtList = {
+    "중앙공원1": "OP48220697364086712,0",
+    "중앙공원2": "OP48220697364086712,1",
+    "중앙공원3": "OP48220697364086712,2",
+    "중앙공원4": "OP48220697364086712,3",
+    "중앙공원5": "OP48220697364086712,4",
+    "중앙공원6": "OP48220697364086712,5",
+    "중앙공원7": "OP48220697364086712,6",
+    "중앙공원8": "OP48220697364086712,7",
+    "중앙공원9": "OP48220697364086712,8",
+    "중앙공원10": "OP48220697364086712,9",
+    "수질복원센터A 테니스장1": "OP17028520651712824,0",
+    "수질복원센터A 테니스장2": "OP21695037103696738,0",
+    "수질복원센터A 테니스장3": "OP21166946437826537,0",
+    "수질복원센터A 테니스장4": "OP21695037103696738,1",
+    "수질복원센터A 테니스장5": "OP21703893297820968,0",
+    "수질복원센터A 테니스장6": "OP21695037103696738,2",
+    "수질복원센터A 테니스장7": "OP17028232109098739,0",
+    "수질복원센터A 테니스장8": "OP21695037103696738,3",
+    "수질복원센터A 테니스장9": "OP17028232109098739,1",
+    "금남 생활체육공원1": "OP17271926690114529,0",
+    "금남 생활체육공원2": "OP17271926690114529,1",
+    "금남 생활체육공원3": "OP17271926690114529,2",
+    "다정동 저류지 체육시설1 ": "OP17273881146249546,0",
+    "다정동 저류지 체육시설2 ": "OP17273881146249546,1",
+    "다정동 저류지 체육시설3 ": "OP17273881146249546,2",
+    "소정 테니스장 A": "OP46996723757808552,0",
+    "소정 테니스장 B": "OP46996723757808552,1",
+    "소정 테니스장 C": "OP46996723757808552,2",
+    "수질복원센터B 1": "OP17028743154983862,0",
+    "수질복원센터B 2": "OP21696357966701005,0",
+    "수질복원센터B 3": "OP17028743154983862,1",
+    "전의생활체육공원1": "OP15716320733942054,0",
+    "전의생활체육공원2": "OP15716320733942054,1",
+    "전의생활체육공원3": "OP15716320733942054,2",
+    "전의공공하수처리시설1": "OP10900259200163999,0",
+    "조치원 체육공원1": "OP16682360410452683,0",
+    "조치원 체육공원2": "OP16682360410452683,1",
+    "조치원 체육공원3": "OP16682360410452683,2",
+    "조치원 체육공원4": "OP16682360410452683,3",
+    "조치원 체육공원5": "OP16682360410452683,4",
+}
 
 
 class DataHandler:
@@ -15,6 +65,7 @@ class DataHandler:
         self.key_path = key_path
         self.data_path = data_path
         self.load_key()
+
         # 파일이 존재할 때만 데이터를 불러옴
         if os.path.exists(self.data_path):
             self.load_data()
@@ -161,7 +212,7 @@ class DataHandler:
         computer_info = json.loads(json_data)
         return computer_info
 
-    def check_user_info(self, mac_address):
+    def auth_user_info_DB(self, mac_address):
         try:
             connection = mariadb.connect(
                 host="222.99.18.182",
@@ -178,21 +229,24 @@ class DataHandler:
 
             print(result)
 
-            # 결과에 따라 메시지 출력
-            if result:
-                return True
-            else:
-                return False
-
             # 데이터베이스 연결 종료
             cursor.close()
             connection.close()
 
-        except mariadb.Error as e:
-            print(f"서버와 연결이 원활하지 않습니다 : {e}")
-            sys.exit(1)
+            # 결과에 따라 메시지 출력
+            if result:
+                auth_Data = {"code": "SUCCESS", "message": "인증된 사용자입니다."}
+                return auth_Data
+            else:
+                auth_Data = {"code": "FAIL", "message": "인증받지 않은 사용자입니다.\n키 등록 후 사용해 주세요"}
+                return auth_Data
 
-    def upsert_user_info(self, computer_Info, program_key):
+
+        except mariadb.Error as e:
+            auth_Data = {"code": "ERROR", "message": f"서버와 연결이 원활하지 않습니다.\n{e}"}
+            return auth_Data
+
+    def upsert_user_info_DB(self, computer_Info, program_key):
         try:
             connection = mariadb.connect(
                 host="222.99.18.182",
@@ -210,8 +264,8 @@ class DataHandler:
             )
             result = cursor.fetchone()
 
-            print("컴퓨터 정보를 등록합니다 : ", computer_Info)
-
+            print("[dataHandler-upsert_user_info_DB] 컴퓨터 정보를 등록합니다 : ", computer_Info)
+            print("[dataHandler-upsert_user_info_DB] result : ",result)
             if result:
                 if result[0] and result[0] != computer_Info["mac_address"]:
                     print("program_key가 존재하고 mac_address 존재하지만 입력된 mac_address 다른 경우")
@@ -242,4 +296,172 @@ class DataHandler:
                 return "FAIL"
 
         except mariadb.Error as e:
-            return f"서버와 연결이 원활하지 않습니다\n{e}"
+            return "ERROR"
+
+    def fcltList(self, oprtnPlanNo, sYear, sMonth, sDay):
+        headers = {
+            "Accept": "application/json, text/javascript, */*; q=0.01",
+            "Host": "onestop.sejong.go.kr",
+            "Origin": "https://onestop.sejong.go.kr",
+            "Referer": "https://onestop.sejong.go.kr/Usr/resve/instDetail.do",
+        }
+        params = {
+            "oprtnPlanNo": oprtnPlanNo,
+            "sYear": sYear,
+            "sMonth": sMonth,
+            "sDay": sDay,
+            "fcltNo": "",
+        }
+
+        params = urllib.parse.urlencode(params)
+
+        url = "https://onestop.sejong.go.kr/Usr/resve/rest/timeCheck.do"
+        res = requests.post(url=url, params=params)
+        data = json.loads(res.text)
+
+        # 응답 내용 확인
+        # print("reserve 응답 상태 코드:", res.status_code)
+        # print(f"응답 텍스트({name}):", res.text)
+
+        reserveList = data
+
+        # print("reserveList : ",reserveList)
+
+        #############################################################
+        # 예약자 명단 종료
+        #############################################################
+
+        headers = {
+            "Accept": "application/json, text/javascript, */*; q=0.01",
+            "Host": "onestop.sejong.go.kr",
+            "Origin": "https://onestop.sejong.go.kr",
+            "Referer": "https://onestop.sejong.go.kr/Usr/resve/instDetail.do",
+        }
+        params = {
+            "oprtnPlanNo": oprtnPlanNo,
+            "sYear": sYear,
+            "sMonth": sMonth,
+            "sDay": sDay,
+            "fcltNo": "",
+        }
+
+        params = urllib.parse.urlencode(params)
+
+        url = "https://onestop.sejong.go.kr/Usr/resve/rest/fcltList.do"
+        res = requests.post(url=url, params=params)
+        # print(f"params : {params}")
+        # print(f'url : {url}')
+        # print(res)
+        # 요청 보내기
+
+        # 응답 내용 확인
+        # print("fclt 응답 상태 코드:", res.status_code)
+        # print(f"응답 텍스트({name}):", res.text)
+        # JSON 데이터 파싱
+        data = json.loads(res.text)
+        # 새로운 딕셔너리 생성
+        fcltList = data["fcltList"]
+        timeList = data["timeList"]
+
+        tennisCountCheckList = {}
+        for data in fcltList:
+            for time in timeList:
+                fcltNo = data["fcltNo"]
+                fcltNm = data["fcltNm"]
+                oprtnPlanUseTimeNo = time["oprtnPlanUseTimeNo"]
+                tennisCountCheckList[f"{fcltNo}-{oprtnPlanUseTimeNo}"] = {
+                    "fcltNm": fcltNm,
+                    "fcltNo": fcltNo,
+                    "oprtnPlanUseTimeNo": time["oprtnPlanUseTimeNo"],
+                    "oprtnPlanNo": time["oprtnPlanNo"],
+                    "strUseBeginHm": time["strUseBeginHm"],
+                    "strUseEndHm": time["strUseEndHm"],
+                    "useBeginHm": time["useBeginHm"],
+                    "useEndHm": time["useEndHm"],
+                }
+        # print('tennisCountCheckList1 : ',tennisCountCheckList)
+
+        # print(f"기예약 갯수 : {len(reserveList['checkList'])}")
+
+        # tennisCountCheckList reserveYn : Y 으로 초기화
+        for key in tennisCountCheckList:
+            tennisCountCheckList[key]["reserveYn"] = "Y"
+
+        for reservation in reserveList["checkList"]:
+            # fcltNo와 oprtnPlanUseTimeNo를 결합하여 키 생성
+            key = f"{reservation['fcltNo']}-{reservation['oprtnPlanUseTimeNo']}"
+            # print(key)
+
+            # tennisCountCheckList1 해당 키가 존재하는지 확인
+            if key in tennisCountCheckList:
+                # 존재하면 reserveYn: 'N' 추가
+                tennisCountCheckList[key]["reserveYn"] = "N"
+
+        return tennisCountCheckList
+
+    def set_Data_Ui(self, ui_instance):
+        global tennisCourtList
+
+        # 시작일,종료일 설정
+        # 오늘
+        start = datetime.today().strftime("%Y-%m-%d")
+        # 20일 뒤
+        last = (datetime.today() + timedelta(days=20)).strftime("%Y-%m-%d")
+
+        # 시작일, 종료일 datetime 으로 변환
+        start_date = datetime.strptime(start, "%Y-%m-%d")
+        last_date = datetime.strptime(last, "%Y-%m-%d")
+
+        # 종료일 까지 반복
+        while start_date <= last_date:
+            dateName = start_date.strftime("%Y-%m-%d")
+            dateValue = start_date.strftime("%Y%m%d,%Y,%m,%d")
+            ui_instance.date1Cb.addItem(dateName, dateValue)
+            ui_instance.date2Cb.addItem(dateName, dateValue)
+
+            # 하루 더하기
+            start_date += timedelta(days=1)
+
+        # 프로그램 실행 시 20일 뒤 날짜를 기본으로 설정
+        ui_instance.date1Cb.setCurrentText(last_date.strftime("%Y-%m-%d"))
+        ui_instance.date2Cb.setCurrentText(last_date.strftime("%Y-%m-%d"))
+
+        for i in range(20, 6, -2):
+            j = i + 2
+            if len(str(i)) == 1:
+                i = "0" + str(i)
+            if len(str(j)) == 1:
+                j = "0" + str(j)
+            # 20:00 ~ 22:00
+            ui_instance.time1Cb.addItem(
+                "%s:00 ~ %s:00" % (i, j), "%s:00 ~ %s:00" % (i, j)
+            )
+            ui_instance.time2Cb.addItem(
+                "%s:00 ~ %s:00" % (i, j), "%s:00 ~ %s:00" % (i, j)
+            )
+
+        # 전의 생활공원의 경우 시간이 다름
+        ui_instance.time1Cb.addItem("===다정동용===", "")
+        ui_instance.time1Cb.addItem("09:00 ~ 10:00", "09:00 ~ 10:00")
+        ui_instance.time1Cb.addItem("===전의 생활공원용===", "")
+        ui_instance.time1Cb.addItem("10:30 ~ 12:30", "10:30 ~ 12:30")
+        ui_instance.time1Cb.addItem("13:00 ~ 15:00", "13:00 ~ 15:00")
+        ui_instance.time1Cb.addItem("15:30 ~ 17:30", "15:30 ~ 17:30")
+        ui_instance.time1Cb.addItem("18:00 ~ 20:00", "18:00 ~ 20:00")
+        ui_instance.time2Cb.addItem("===다정동용===", "")
+        ui_instance.time2Cb.addItem("09:00 ~ 10:00", "09:00 ~ 10:00")
+        ui_instance.time2Cb.addItem("===전의생활공원용===", "")
+        ui_instance.time2Cb.addItem("10:30 ~ 12:30", "10:30 ~ 12:30")
+        ui_instance.time2Cb.addItem("13:00 ~ 15:00", "13:00 ~ 15:00")
+        ui_instance.time2Cb.addItem("15:30 ~ 17:30", "15:30 ~ 17:30")
+        ui_instance.time2Cb.addItem("18:00 ~ 20:00", "18:00 ~ 20:00")
+
+        # 테니스장 선택 콤보박스 데이터 삽입
+        for name, code in tennisCourtList.items():
+            ui_instance.tennisPlace1Cb.addItem(name, code)
+            ui_instance.tennisPlace2Cb.addItem(name, code)
+
+        # 초기 계정정보 읽어오기
+        if self.get_user_count() != 0:
+            for user in self.data["user_info"]:
+                ui_instance.idCb.addItem(f"{user['id']}", f"{user['pw']}")

@@ -1,14 +1,18 @@
 import threading
 from datetime import datetime
 
+
+
 class Reservation:
-    def __init__(self):
+    def __init__(self, callback):
+        self.callback = callback
         self.timer = None
         self.timer_running = False  # 타이머 실행 상태를 나타내는 플래그
 
     def do_auto_reserve(self):
-        print("자동예약 실시")
         self.auto_reserve_stop_timer()
+        self.callback()  # 콜백 함수 실행 : do_reserve
+        return True
 
     def auto_reserve_check_time(self, auto_Time_Value):
         if not self.timer_running:  # 타이머가 중지된 경우 함수 실행을 중단
@@ -17,7 +21,6 @@ class Reservation:
         current_time = datetime.now().strftime("%H:%M:%S")
         run_at_time = auto_Time_Value
 
-        print(f"current_time: {current_time} / {run_at_time}")
 
         if current_time == run_at_time:
             self.do_auto_reserve()
@@ -36,8 +39,5 @@ class Reservation:
             self.timer.cancel()
             self.timer = None
         self.timer_running = False
-        print("타이머 중지됨")
 
-# 예시 사용
-reservation = Reservation()
-reservation.auto_reserve_start_timer("16:50:00")  # 예시 시간
+
