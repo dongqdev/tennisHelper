@@ -1,13 +1,17 @@
 import getpass
 import hashlib
-import json
 import os
 import platform
 import socket
 import urllib
 import uuid
+import json
 from datetime import datetime, timedelta
 
+from cryptography.fernet import Fernet, InvalidToken
+import json
+import base64
+from hashlib import sha256
 
 import mariadb
 import requests
@@ -213,6 +217,52 @@ class DataHandler:
         return computer_info
 
     def auth_user_info_DB(self, mac_address):
+        # JSON 파일의 URL
+        url = "https://raw.githubusercontent.com/dongqdev/tennisHelperFile/main/user.db"
+        key = "b'zmGCi197JAFo-JlF9t6y4-jhe8FQUvyRxlJB8R7426c='"
+
+        # URL에서 데이터 가져오기
+        response = requests.get(url)
+
+
+
+        # 에러 체크
+        response.raise_for_status()
+
+        # 암호화된 데이터와 키 (이전 단계에서 얻음)
+        encrypted_data = response  # 암호화된 데이터를 여기에 넣으세요
+        key = b""  # 암호화할 때 사용한 키를 여기에 넣으세요
+
+        # 같은 키로 Fernet 객체 생성
+        cipher_suite = Fernet(key)
+
+        # 데이터 복호화
+        try:
+            decrypted_data = cipher_suite.decrypt(encrypted_data)
+            # 복호화된 데이터를 JSON으로 변환
+            data = json.loads(decrypted_data.decode())
+            print("복호화된 데이터:", data)
+        except (InvalidToken, TypeError):
+            print("복호화에 실패했습니다. 올바른 키와 데이터를 사용했는지 확인하세요.")
+
+        # JSON 데이터를 파이썬 객체로 변환
+        data = response.json()
+
+        # 데이터 사용 예시: 모든 사용자의 'os'와 'username' 출력
+        for user in data:
+            print(user["os"], user["username"])
+
+
+        if result:
+            auth_Data = {"code": "SUCCESS", "message": "인증된 사용자입니다."}
+            return auth_Data
+        else:
+            auth_Data = {"code": "FAIL", "message": "인증받지 않은 사용자입니다.\n키 등록 후 사용해 주세요"}
+            return auth_Data
+
+        # 추가적인 데이터 처리 및 사용...
+
+        """
         try:
             connection = mariadb.connect(
                 host="222.99.18.182",
@@ -245,6 +295,7 @@ class DataHandler:
         except mariadb.Error as e:
             auth_Data = {"code": "ERROR", "message": f"서버와 연결이 원활하지 않습니다.\n{e}"}
             return auth_Data
+        """
 
     def upsert_user_info_DB(self, computer_Info, program_key):
         try:
@@ -265,7 +316,7 @@ class DataHandler:
             result = cursor.fetchone()
 
             print("[dataHandler-upsert_user_info_DB] 컴퓨터 정보를 등록합니다 : ", computer_Info)
-            print("[dataHandler-upsert_user_info_DB] result : ",result)
+            print("[dataHandler-upsert_user_info_DB] result : ", result)
             if result:
                 if result[0] and result[0] != computer_Info["mac_address"]:
                     print("program_key가 존재하고 mac_address 존재하지만 입력된 mac_address 다른 경우")

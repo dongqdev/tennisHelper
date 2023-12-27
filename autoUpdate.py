@@ -11,7 +11,7 @@ current_version = "2.2.3"
 
 # 원격 버전을 확인하는 URL
 # version_url = "http://ns.hakumata.world/tennisHelper/appInfo.txt"
-version_url = "http://ns.hakumata.world/tennisHelper/appInfo.txt"
+version_url = "https://raw.githubusercontent.com/dongqdev/tennisHelperFile/main/appInfo.txt"
 
 class AutoUpdate:
     def __init__(self):
@@ -64,7 +64,8 @@ class AutoUpdate:
     # 다운로드 및 실행 함수
     def download_and_execute(self, remote_version):
         # 원격 .exe 파일 URL
-        url = "http://ns.hakumata.world/tennisHelper/tennisHelper.exe"
+        # url = "http://ns.hakumata.world/tennisHelper/tennisHelper.exe"
+        url = "https://github.com/dongqdev/tennisHelperFile/raw/main/tennisHelper.exe"
         # 다운로드할 파일 경로
         local_exe_path = f"tennisHelper_v{remote_version}.exe"
 
