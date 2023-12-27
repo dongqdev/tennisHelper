@@ -7,9 +7,10 @@ from PyQt6.QtWidgets import QMessageBox
 from PySide6.QtWidgets import QProgressDialog
 
 # 현재 버전
-current_version = "2.2.0"
+current_version = "2.2.3"
 
 # 원격 버전을 확인하는 URL
+# version_url = "http://ns.hakumata.world/tennisHelper/appInfo.txt"
 version_url = "http://ns.hakumata.world/tennisHelper/appInfo.txt"
 
 class AutoUpdate:

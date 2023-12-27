@@ -20,12 +20,7 @@ from PySide6.QtCore import (
     QTime,
     Qt,
 )
-from PySide6.QtGui import (
-    QBrush,
-    QColor,
-    QFont
-
-)
+from PySide6.QtGui import QBrush, QColor, QFont
 from PySide6.QtWidgets import *
 
 from PySide6.QtCore import QTimer
@@ -56,7 +51,7 @@ options.add_experimental_option("detach", True)  # 브라우저 바로 닫힘 �
 options.add_experimental_option("excludeSwitches", ["enable-logging"])  # 불필요한 메시지 제거
 
 # 페이지 로드 전략을 'eager'로 설정
-options.page_load_strategy = 'eager'
+options.page_load_strategy = "eager"
 
 # WebDriver 초기화
 driver = webdriver.Chrome(options=options)
@@ -78,7 +73,8 @@ driver.set_window_size(1200, 800)
 ##################################################
 
 # 액션 후 지연시간 : 돔생성 후 버튼 동작하기 위해
-actionTime = 0.4
+actionTime = 0.7
+actionTime2 = 0.7
 
 
 class TennisScheduleWindow(QWidget):
@@ -151,7 +147,7 @@ class MainWindow(QMainWindow):
         self.init_Ui()
 
         # 창위치 변경
-        self.move(1350,200)
+        self.move(1350, 200)
 
         # dataHandler 로드
         self.data_handler = DataHandler()
@@ -173,13 +169,19 @@ class MainWindow(QMainWindow):
         update_Check_Info = self.autoUpdate.check_Version()
         print("[tennisHelper_ui-__init__] update_Check_Info : ", update_Check_Info)
         if update_Check_Info["messageCode"] == "UPDATE":
-            self.show_information_message(update_Check_Info["header"], update_Check_Info["message"])
+            self.show_information_message(
+                update_Check_Info["header"], update_Check_Info["message"]
+            )
             driver.quit()
-            self.autoUpdate.download_and_execute()
+            # self.autoUpdate.download_and_execute()
         elif update_Check_Info["messageCode"] == "NOUPDATE":
-            self.show_information_message(update_Check_Info["header"], update_Check_Info["message"])
+            self.show_information_message(
+                update_Check_Info["header"], update_Check_Info["message"]
+            )
         else:
-            self.show_information_message(update_Check_Info["header"], update_Check_Info["message"])
+            self.show_information_message(
+                update_Check_Info["header"], update_Check_Info["message"]
+            )
             driver.quit()
             sys.exit()
 
@@ -582,7 +584,6 @@ class MainWindow(QMainWindow):
         # 다크모드 기본 활성화
         self.darkModeChBox.setChecked(True)
 
-
     def show_information_message(self, title, message):
         # 기존의 QMessageBox 생성 부분
         msg = QMessageBox()
@@ -693,7 +694,6 @@ class MainWindow(QMainWindow):
         auto_Time_Value = self.timeEdit.time().toString("hh:mm:ss")
         self.reserve_fnc.auto_reserve_start_timer(auto_Time_Value)
 
-
     def stop_auto_reserve(self):
         QMessageBox.information(self, "자동예약안내", f"자동예약이 중지되었습니다.")
         self.reserve_fnc.auto_reserve_stop_timer()
@@ -748,14 +748,10 @@ class MainWindow(QMainWindow):
             # driver.execute_script("sjCombineLogin()")
             # WebDriverWait를 사용하여 원하는 요소가 나타날 때까지 기다립니다.
             WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located(
-                    (By.XPATH, f"//a[text()='로그인']")
-                )
+                EC.presence_of_element_located((By.XPATH, f"//a[text()='로그인']"))
             )
             driver.execute_script("sjCombineLogin()")
             # driver.find_element(By.XPATH, f"//a[text()='로그인']").click()
-            
-
 
             # alert 메시지 제거
             # 지원종료 : driver.switchTo().alert().accept();
@@ -815,7 +811,6 @@ class MainWindow(QMainWindow):
         else:
             print(f"[tennisHelper_ui-auth_User_Info] 승인된 사용자 입니다.")
 
-
     ####################################################
     # 예약하기
     ####################################################
@@ -852,7 +847,8 @@ class MainWindow(QMainWindow):
             basicUrl + reservationData["tennisPlace"] + "&fcltType=SPT&menuName=테니스장"
         )
         print(f"[tennisHelper_ui-do_reserve({reserve_Info_Num})] 예약화면으로 이동 완료")
-        # time.sleep(actionTime)
+        if actionTime2 > 0:
+            time.sleep(actionTime2)
 
         # 날짜 선택
         # scrpit로 실행
@@ -870,20 +866,25 @@ class MainWindow(QMainWindow):
             "Y",
         )
         print(f"[tennisHelper_ui-do_reserve({reserve_Info_Num})] 날짜 선택 화면 이동 완료")
+        if actionTime2 > 0:
+            time.sleep(actionTime2)
 
-        calendatDateBtn = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "instDetail_resveDate_btn")))
+        calendatDateBtn = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.ID, "instDetail_resveDate_btn"))
+        )
         calendatDateBtn.click()
 
         # driver.execute_script("document.querySelector('#instDetail_resveDate_btn').click()")
         print(f"[tennisHelper_ui-do_reserve({reserve_Info_Num})] 날짜 선택 성공  =====")
-        # time.sleep(actionTime)
+        if actionTime2 > 0:
+            time.sleep(actionTime2)
 
         # 테니스장/테니스 코트 선택
         # 테니스장 시간 순서 변경으로 실제 시간 READ
         # document.querySelector("span").parentElement.parentElement.onclick()
         print(f"[tennisHelper_ui-do_reserve({reserve_Info_Num})] 테니스 코트/시간 선택 시작")
         # driver.execute_script("document.querySelectorAll('#timeSection_' + " + time1 + ")[parseInt(" + tennisCourt1 + ")].click()")
-        '''
+        """
         driver.execute_script(
             
             var tempTimeEl = new Array();
@@ -907,30 +908,44 @@ class MainWindow(QMainWindow):
         # 시간 선택
         time_Button = matching_spans[int(reservationData['tennisCourt'])]
         time_Button.click()
-        '''
+        """
 
         # WebDriverWait를 사용하여 원하는 요소가 나타날 때까지 기다립니다.
         WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.XPATH, f"//span[text()='{reservationData['time']}']"))
+            EC.presence_of_element_located(
+                (By.XPATH, f"//span[text()='{reservationData['time']}']")
+            )
         )
-        
+        if actionTime2 > 0:
+            time.sleep(actionTime)
+
         # 더 구체적인 선택자 사용
-        matching_spans = driver.find_elements(By.XPATH, f"//span[text()='{reservationData['time']}']")
-        
+        matching_spans = driver.find_elements(
+            By.XPATH, f"//span[text()='{reservationData['time']}']"
+        )
+
         # 코트/시간 선택 및 클릭
-        matching_spans[int(reservationData['tennisCourt'])].click()
+        matching_spans[int(reservationData["tennisCourt"])].click()
         print(f"[tennisHelper_ui-do_reserve({reserve_Info_Num})] 테니스 코트/시간 선택 완료")
         time.sleep(actionTime)
 
         try:
-            print(f"[tennisHelper_ui-do_reserve({reserve_Info_Num})] 오른쪽 하단 다음버튼 클릭하여 메시지 박스(매크로 안내문구) 활성화 시작")
-            instDetail_resveTime_btn = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "instDetail_resveTime_btn")))
+            print(
+                f"[tennisHelper_ui-do_reserve({reserve_Info_Num})] 오른쪽 하단 다음버튼 클릭하여 메시지 박스(매크로 안내문구) 활성화 시작"
+            )
+            instDetail_resveTime_btn = WebDriverWait(driver, 10).until(
+                EC.element_to_be_clickable((By.ID, "instDetail_resveTime_btn"))
+            )
             instDetail_resveTime_btn.click()
-            print(f"[tennisHelper_ui-do_reserve({reserve_Info_Num})] 오른쪽 하단 다음버튼 클릭하여 메시지 박스(매크로 안내문구) 활성화 완료")
+            if actionTime2 > 0:
+                time.sleep(actionTime2)
+            print(
+                f"[tennisHelper_ui-do_reserve({reserve_Info_Num})] 오른쪽 하단 다음버튼 클릭하여 메시지 박스(매크로 안내문구) 활성화 완료"
+            )
         except Exception as e:
             print(f"[tennisHelper_ui-do_reserve({reserve_Info_Num})] 예약실패")
             if self.reserveChbox2.isChecked():
-                if(reserve_Info_Num ==1) and (self.reserveChbox2.isChecked()):
+                if (reserve_Info_Num == 1) and (self.reserveChbox2.isChecked()):
                     time.sleep(actionTime)
                     self.do_reserve(2)
             print(f"[tennisHelper_ui-do_reserve({reserve_Info_Num})] 예외 발생 : {e}")
@@ -942,15 +957,20 @@ class MainWindow(QMainWindow):
                 EC.element_to_be_clickable((By.ID, "agree1"))
             )
             agree1.click()
-            # time.sleep(0.2)
+            if actionTime2 > 0:
+                time.sleep(actionTime2)
             agree2 = WebDriverWait(driver, 10).until(
                 EC.element_to_be_clickable((By.ID, "agree2"))
             )
             agree2.click()
-            # time.sleep(0.2)
-            btnWrap01 = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.NAME, "btnWrap01")))
+            if actionTime2 > 0:
+                time.sleep(actionTime2)
+            btnWrap01 = WebDriverWait(driver, 10).until(
+                EC.element_to_be_clickable((By.NAME, "btnWrap01"))
+            )
             btnWrap01.click()
-            # time.sleep(actionTime)
+            if actionTime2 > 0:
+                time.sleep(actionTime2)
             print(f"[tennisHelper_ui-do_reserve({reserve_Info_Num})] 예약가능")
         except Exception as e:
             print(f"[tennisHelper_ui-do_reserve({reserve_Info_Num})] 예약실패")
@@ -962,29 +982,42 @@ class MainWindow(QMainWindow):
 
         # 이용안내 동의 및 예약 사유 화면이동
         print(f"[tennisHelper_ui-do_reserve({reserve_Info_Num})] 매크로 알림창 동의 체크 시작")
-        agreeCheck = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "agreeCheck")))
+        agreeCheck = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.ID, "agreeCheck"))
+        )
         agreeCheck.click()
+        if actionTime2 > 0:
+            time.sleep(actionTime2)
         print(f"[tennisHelper_ui-do_reserve({reserve_Info_Num})] 매크로 알림창 동의 체크 완료")
-        # time.sleep(0.5)
-        macro_alert = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="mb-row"]/div/div/div/div/button')))
+
+        macro_alert = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable(
+                (By.XPATH, '//*[@id="mb-row"]/div/div/div/div/button')
+            )
+        )
         macro_alert.click()
         print(f"[tennisHelper_ui-do_reserve({reserve_Info_Num})] 매크로 알림창 동의 확인 완료")
-        # time.sleep(0.5)
+        if actionTime2 > 0:
+            time.sleep(actionTime2)
 
         # 예약사유 입력
         print(f"[tennisHelper_ui-do_reserve({reserve_Info_Num})] 이용안내 동의 및 예약 사유 화면이동")
         # driver.find_element(By.ID, "infoYn").send_keys('pass')
         macro_final = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.XPATH, '//*[@id="content"]/div[3]/div[4]/div/div[1]/a/div'))
+            EC.element_to_be_clickable(
+                (By.XPATH, '//*[@id="content"]/div[3]/div[4]/div/div[1]/a/div')
+            )
         )
         macro_final.click()
 
         print(f"[tennisHelper_ui-do_reserve({reserve_Info_Num})] 이용안내 동의 확인 완료")
-        # time.sleep(0.5)
+        if actionTime2 > 0:
+            time.sleep(actionTime2)
 
         driver.find_element(By.ID, "resveResn").send_keys("개인운동")
         print(f"[tennisHelper_ui-do_reserve({reserve_Info_Num})] 예약사유 입력 완료")
-        # time.sleep(0.5)
+        if actionTime2 > 0:
+            time.sleep(actionTime2)
 
         # 유의사항 동의 및 예약
         goReservation = WebDriverWait(driver, 10).until(
@@ -995,14 +1028,18 @@ class MainWindow(QMainWindow):
         # time.sleep(actionTime)
         # driver.find_element(By.CLASS_NAME, "mb-control-yes").click()
         # print("===== 16. 안내창 체크 완료 =====")
-        # time.sleep(actionTime)
+        if actionTime2 > 0:
+            time.sleep(actionTime2)
         finl_btn = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.XPATH, '//*[@id="mb-row"]/div/div/div/div/button[1]'))
+            EC.element_to_be_clickable(
+                (By.XPATH, '//*[@id="mb-row"]/div/div/div/div/button[1]')
+            )
         )
         finl_btn.click()
 
         print(f"[tennisHelper_ui-do_reserve({reserve_Info_Num})] 결제 안내창 확인 완료")
-        # time.sleep(actionTime)
+        if actionTime2 > 0:
+            time.sleep(actionTime2)
         print(f"[tennisHelper_ui-do_reserve({reserve_Info_Num})] 예약완료")
         if (reserve_Info_Num == 1) and (self.reserveChbox2.isChecked()):
             time.sleep(actionTime)
