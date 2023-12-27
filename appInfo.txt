@@ -1,0 +1,6 @@
+{
+	"version" : "2.2.3",
+	"appName" : "tennisHelper",
+	"updateDate" : "2023.12.01",
+	"updateInfo" : "1. 클라이언트가 느린경우, 날짜 선택 안되는 경우 발생(회당 13-15초로 변경)\n\n\n *이전 버전은 꼭 삭제해 주세요"
+}
