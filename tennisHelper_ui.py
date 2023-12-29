@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # UI 변환 명령어 : pyside6-uic ./tennisHelper.ui -p tennisHelper_UI.py > UI2PY.py
-# EXE 변환 명령어(Window) :  pyinstaller -w -F --icon=sejong_eng.ico -n tennisHelper tennisHelper.py
+# EXE 변환 명령어(Window) :  pyinstaller -w -F --icon=sejong_chn.ico -n tennisHelper tennisHelper.py
 # EXE 변환 명령어(Window) :  pyinstaller -w -F --icon=sejong_eng.ico --onefile -n tennisHelper tennisHelper_ui.py
 # python -m pyinstallerui
 import uuid
