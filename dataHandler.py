@@ -218,8 +218,8 @@ class DataHandler:
 
     def auth_user_info_DB(self, mac_address):
         # JSON 파일의 URL
-        url = "https://raw.githubusercontent.com/dongqdev/tennisHelperFile/main/user.db"
-        key = b'2WjEGMbXhVXXSmTshltaLXOceRjxTc7F5Mk3_uDR9UI='
+        url = "https://raw.githubusercontent.com/dongqdev/tennisHelperFile/main/user.txt"
+        key = b'XlLg32xNIN5PZB5lEH89ejUSNLQ1k52K-ptQ4LjI_8U='
 
         # Fernet 객체 생성
         cipher_suite = Fernet(key)
@@ -227,9 +227,10 @@ class DataHandler:
         # URL에서 암호화된 데이터 다운로드
         response = requests.get(url)
         encrypted_data = response.content
-
+        print(encrypted_data)
+        # encrypted_data = b'gAAAAABljrSW0UUUG47yATN5dAP0C37SSMjvFSa0cWFs2_GJ_j7iuM7vqgWWs5eRauedZJ_JiQzYK-Fs2HUMX1OnitOI2mVjRrEU85-eCJvv3JTIKU56EM2meQh4tAGMFlFnEc3T4aDo31eH5bIbpNtDVm7HYRLDDKsSg6t7deWciksSF1rOex0UXwoVzkUAWaUV7b-7Jg78Q-rG1n_gtUq7lDJd_gVASXp3jyqAf9r-VdOSC7AqbHlFl0UpshQkA8BdzBZUy_AifmYSll7lu5-63azum8VGE1-LuuGk3zT26HMDd-LKDOI7u0VK94cpt0NrNRaeyQkdWPk1bdRtzzcAhktRvKXcXKNEdDS8CG-wv65ju3JEiUCbE3uQ1DBzwOowLwQLfIC45kBL1AutSkVMm9UDOncNmOyUx0haUh4PKYowJPQDV27o_nIcBYDyc0h3L9XEvofoKx6NlQdFZrNw9yqiLhsnjtfOYcWbaIb-VPjZoQaKm89B5O6SuprU1j-NygSpZCk6rp93evZNjtXFKQtaSanPi1htocK6fgUDj7TBlcZ7Dn3OAJzRExfx-LJJaKsrHOfnX7KKoTTqHk0z2w__RD22YEGqx0ORSyzQ6Og2mwiPg967txIDP-1HZ7sRcl-0zaH3JsIjFdyPl8mBHtQ2i7Iz7ZrwMZVFmqi9gUN6X6C7uNGs0GkMsAnac0HSMSUxLRMBQa9E3IM2YBmv-ft7iWP3R3P47NLwK4UFZ4jXV1pvySUS5Ixx2UNhfzIFxP74m2gzvXg3-JwfDt5VG2FBtHWMuBbcUGVqodv4BXwDgRSUfdf6qmNHwIJjfyMCWJvLofKGj4R2yZ9wYQkq9ZxDdxg-D8siF4yeRrWCXnK8HNooE6slswJgXd2qtMOf8ZAVwA6tXRDci_Sdvq6aiBVd-y9VlPbDdQaqyGr5S1fMhO-StJCFkRGLhZjuppc5Ev4-mJkelBmt9zSyigHWldpEGLu8lAjKlcvnqDgZfsApaV8I9NCuhI8QsHk3Ow5X2X49uN-M9_cxvzxpm4yFshdDsFakRp0OIoF9_BYywGqfXwgTyH2BVT0SYX0cOACusWb50__LeKvTNThzCuqiBDfl32GIiVQYngyPw0U2t6zeBRXynWr-TfApLk1UD3RR_qxPd0I9_9GbUAnC3o5BbRkQXMzHLcaGHg314tqFsgAR0Hn4xablXCp8zLBrMXgjOS8huRLOgv2ZUOQ25_6n1zmzU3q-Xy_J71dgmM2SW4v_v7JE9TkVkzqx1VghwDrIpMNCliYrh5vTkOi5LHTpq_dp0LdhtxlQb7MLVX5YjISIKCY7thmV0ffq43soLhT8_DoQ7vASbYk0dJSQ8CatOzu8NeEYYggDg5d6J5I3xrWwXJYTRnEMsLMTssEPwEaGpzTr_M8bCO9dmygpi8IPO7eiV8qVJY54miJTPueVI8dP_2waj9yXVUIi6Cc1nyvDJfyJqDaV-L59IVFnTxdJNoVWUpbohp6iwB4SMWTvujAts_9F7xwcE7K0vhWCRSeAG69f3fb-0t1gl09xhsgF5kKjLkHGXVej1P7dsJLJKauM-49wnsLpkGguyUKwa1tytVD6LGfpkVXThdB4GxiIe1o9FBcNLzWzpzeyjG2W_Ze5zfC8QIKI9rcroKyaEah2t9zJh4hsJeXzjLyKxFu_TFWMRflRWwBxJ6xlG29MQFAPWp3C7UfIT_rnzQCtp-bV3TWGK9CSskj0a09tZSng5D-GK6RctI8UswvsWGMYtNdHv7XHMdVo0TLEl3oXaOyfB34QcG-S5BckVrYce7NUBl41sDc67GXcYk74YgjrPlM0H6mmYmdMUDtumWJ8UCrIE5bziSS1fLz8Owp6y28qadjqd8C6ql8RFc0vZjkXZ0oMJRFZpsMkvpExRwSJalsHbiOicMBlhafVKfDzsw3VSxFOn2mUWpGxe300qqiL7AthFmeLsKup0WM12SnfNNtDwfqjDf6iSv4SfpzRwE9xzNXop_9O-A6KTDKHV9MaN-FF_RjWlV9ZlkQVkDaFxsy3D2HpPCovekbioxw2y1anz5QoPrL0zo1giTMG7I1lpoliwswQDgaplb0za_1-yy7P6UBqxB2y3CBH7UQr30-FMqG7yj3FSdZXTzU7-1rN78H6ZTWVrbXN3CPL7kVQegtjI9jnGbS6s6YJd4Ssb-80QYfovTkYxmNGz2n4jI3mwEaPi2eypVwdvj1Lc9X-jzHqBv2ArLi7c5x--RKy2wok0mq-XdcSUDpoWYg0PRNPP3ZFsaB8_u1lSHHaWPC_4LNtxHwegqCdK0sCpmoAKwhsU1Uhsslg4v_Ynojc5cWzDifspb_9cv4yB7pf9cG3EpBRAJeaeMTy4fuItzL6I0i94c5iM-0evvqzxawBOCqz2dBWzMFmHMnPW98Y_PLqaONFKQazMRrYuPB92-hvrlMHlBJqtnukQTl7-ouhEsR2mrkb2WLZf7d8YLjpe4FlRS-utCrFUw0_AtxmiZNQpdLyeS6e9GiU4g=='
         decrypted_data = ""
-
+        data = ""
         # 데이터 복호화
         try:
             decrypted_data = cipher_suite.decrypt(encrypted_data)
@@ -238,13 +239,20 @@ class DataHandler:
             print("복호화하는 동안 오류가 발생했습니다:", e)
 
         # JSON 데이터를 파이썬 객체로 변환
-        data = decrypted_data.json()
+        try:
+            data = json.loads(decrypted_data.decode())
+            print("복호화 후 JSON으로 변환된 데이터:", data)
+        except Exception as e:
+            print("데이터 변환 중 오류가 발생했습니다:", e)
 
         # 데이터 사용 예시: 모든 사용자의 'os'와 'username' 출력
+        result = 0
         for user in data:
-            print(user["os"], user["username"])
+            print(user["username"], user['mac_address'])
+            if mac_address == user['mac_address']:
+                result += 1
 
-        if result:
+        if result > 0:
             auth_Data = {"code": "SUCCESS", "message": "인증된 사용자입니다."}
             return auth_Data
         else:
@@ -253,40 +261,6 @@ class DataHandler:
 
         # 추가적인 데이터 처리 및 사용...
 
-        """
-        try:
-            connection = mariadb.connect(
-                host="222.99.18.182",
-                database="tennis_helper",
-                user="tennishelper",
-                password="pu(H_CwbGc4kFtv.",
-            )
-            # 커서 생성
-            cursor = connection.cursor()
-
-            # mac_address로 user 테이블 검색
-            cursor.execute("SELECT * FROM user WHERE mac_address = ?", (mac_address,))
-            result = cursor.fetchone()
-
-            print(result)
-
-            # 데이터베이스 연결 종료
-            cursor.close()
-            connection.close()
-
-            # 결과에 따라 메시지 출력
-            if result:
-                auth_Data = {"code": "SUCCESS", "message": "인증된 사용자입니다."}
-                return auth_Data
-            else:
-                auth_Data = {"code": "FAIL", "message": "인증받지 않은 사용자입니다.\n키 등록 후 사용해 주세요"}
-                return auth_Data
-
-
-        except mariadb.Error as e:
-            auth_Data = {"code": "ERROR", "message": f"서버와 연결이 원활하지 않습니다.\n{e}"}
-            return auth_Data
-        """
 
     def upsert_user_info_DB(self, computer_Info, program_key):
         try:

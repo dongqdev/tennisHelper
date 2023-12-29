@@ -10,8 +10,17 @@ data = [
         "processor": "Intel64 Family 6 Model 140 Stepping 1 GenuineIntel",
         "hostname": "N11196-01",
         "ip_address": "192.168.1.100",
-        "mac_address": "847b576ae68a",
+        "mac_address": "84:7b:57:6a:e6:8a",
         "username": "11196"
+    },
+    {
+        "program_key": "노란팔찌",
+        "os": "Windows 10.0.22621",
+        "processor": "Intel64 Family 6 Model 154 Stepping 4, GenuineInte",
+        "hostname": "DESKTOP-I1B5E44",
+        "ip_address": "192.168.0.19",
+        "mac_address": "04:cf:4b:ab:da:69",
+        "username": "dong659"
     },
     {
         "program_key": "급한오리",
@@ -19,7 +28,7 @@ data = [
         "processor": "arm",
         "hostname": "dong659MBPM1Pro16.local",
         "ip_address": "192.168.0.14",
-        "mac_address": "c29f4ae91071",
+        "mac_address": "c2:9f:4a:e9:10:71",
         "username": "dong659"
     },
     {
@@ -28,7 +37,7 @@ data = [
         "processor": "Intel64 Family 6 Model 58 Stepping 9 GenuineIntel",
         "hostname": "DESKTOP-1UJPS1F",
         "ip_address": "192.168.219.109",
-        "mac_address": "e8039ade154c",
+        "mac_address": "e8:03:9a:de:15:4c",
         "username": "suseo"
     },
     {
@@ -37,7 +46,7 @@ data = [
         "processor": "Intel64 Family 6 Model 142 Stepping 12 GenuineIntel",
         "hostname": "DESKTOP-K2267O1",
         "ip_address": "192.168.219.107",
-        "mac_address": "60e32bd40372",
+        "mac_address": "60:e3:2b:d4:03:72",
         "username": "SR"
     },
     {
@@ -46,7 +55,7 @@ data = [
         "processor": "Intel64 Family 6 Model 165 Stepping 3 GenuineIntel",
         "hostname": "SR-215206",
         "ip_address": "172.17.6.41",
-        "mac_address": "88aedd2a686b",
+        "mac_address": "88:ae:dd:2a:68:6b",
         "username": "215206"
     },
     {
@@ -55,7 +64,7 @@ data = [
         "processor": "Intel64 Family 6 Model 158 Stepping 9 GenuineIntel",
         "hostname": "LAPTOP-6LNB5KEK",
         "ip_address": "112.145.225.26",
-        "mac_address": "9822efaaa054",
+        "mac_address": "98:22:ef:aa:a0:54",
         "username": "SEC"
     }
 ]
@@ -78,7 +87,7 @@ print(f"key: {key}")
 
 # JSON 파일의 URL
 url = "https://raw.githubusercontent.com/dongqdev/tennisHelperFile/main/user.db"
-key = key
+key = b'XlLg32xNIN5PZB5lEH89ejUSNLQ1k52K-ptQ4LjI_8U='
 
 # Fernet 객체 생성
 cipher_suite = Fernet(key)
@@ -98,12 +107,12 @@ except Exception as e:
     print("복호화하는 동안 오류가 발생했습니다:", e)
 
 # JSON 데이터를 파이썬 객체로 변환
-# JSON 데이터를 파이썬 객체로 변환
 try:
     data = json.loads(decrypted_data.decode())
     print("복호화 후 JSON으로 변환된 데이터:", data)
 except Exception as e:
     print("데이터 변환 중 오류가 발생했습니다:", e)
 
-
-data[0]['program_key']
+# 데이터 사용 예시: 모든 사용자의 'os'와 'username' 출력
+for user in data:
+    print(user["username"], user['mac_address'])
