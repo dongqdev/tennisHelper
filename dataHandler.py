@@ -219,39 +219,30 @@ class DataHandler:
     def auth_user_info_DB(self, mac_address):
         # JSON 파일의 URL
         url = "https://raw.githubusercontent.com/dongqdev/tennisHelperFile/main/user.db"
-        key = "b'zmGCi197JAFo-JlF9t6y4-jhe8FQUvyRxlJB8R7426c='"
+        key = b'2WjEGMbXhVXXSmTshltaLXOceRjxTc7F5Mk3_uDR9UI='
 
-        # URL에서 데이터 가져오기
-        response = requests.get(url)
-
-
-
-        # 에러 체크
-        response.raise_for_status()
-
-        # 암호화된 데이터와 키 (이전 단계에서 얻음)
-        encrypted_data = response  # 암호화된 데이터를 여기에 넣으세요
-        key = b""  # 암호화할 때 사용한 키를 여기에 넣으세요
-
-        # 같은 키로 Fernet 객체 생성
+        # Fernet 객체 생성
         cipher_suite = Fernet(key)
+
+        # URL에서 암호화된 데이터 다운로드
+        response = requests.get(url)
+        encrypted_data = response.content
+
+        decrypted_data = ""
 
         # 데이터 복호화
         try:
             decrypted_data = cipher_suite.decrypt(encrypted_data)
-            # 복호화된 데이터를 JSON으로 변환
-            data = json.loads(decrypted_data.decode())
-            print("복호화된 데이터:", data)
-        except (InvalidToken, TypeError):
-            print("복호화에 실패했습니다. 올바른 키와 데이터를 사용했는지 확인하세요.")
+            print("복호화된 데이터:", decrypted_data.decode())
+        except Exception as e:
+            print("복호화하는 동안 오류가 발생했습니다:", e)
 
         # JSON 데이터를 파이썬 객체로 변환
-        data = response.json()
+        data = decrypted_data.json()
 
         # 데이터 사용 예시: 모든 사용자의 'os'와 'username' 출력
         for user in data:
             print(user["os"], user["username"])
-
 
         if result:
             auth_Data = {"code": "SUCCESS", "message": "인증된 사용자입니다."}
