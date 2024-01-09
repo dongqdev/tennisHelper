@@ -3,6 +3,26 @@
 # UI 변환 명령어 : pyside6-uic ./addAccountDialog.ui -p addAccountDialog.py >> UI2PY2.py
 # EXE 변환 명령어(MAC) : pyinstaller -w -F --icon=sejong_eng.ico -n tennisHelper tennisHelper.py
 # EXE 변환 명령어(Window) :  pyinstaller -w -F --icon=sejong_eng.ico -n tennisHelper_v tennisHelper.py
+# pyuic6 tennisHelper.ui -0 output.py
+# 아래 문구 추가
+# 상단 :
+'''
+    def __init__(self):
+        super(MainWindow, self).__init__()
+        self.setupUi()  # UI 설정 함수 호출
+
+    def setupUi(self):
+'''
+# 하단
+'''
+if __name__ == '__main__':
+    app = QApplication(sys.argv)  # 앱 객체 생성
+    mainWin = MainWindow()  # 메인 윈도우 객체 생성
+    mainWin.show()  # 메인 윈도우 보여주기
+    sys.exit(app.exec())  # 이벤트 루프 시작
+'''
+# parent=MainWindow >>> 찾아 바꾸기 >>> parent=self
+
 
 import mariadb
 import getpass
@@ -11,8 +31,14 @@ import subprocess
 import urllib
 
 import requests
-from PyQt6.QtCore import QObject, QThread, pyqtSignal, QProcess
-from PyQt6.QtWidgets import QMessageBox, QTimeEdit, QDialog
+
+# PYQT6
+from PyQt6 import QtCore, QtGui, QtWidgets
+from PyQt6.QtWidgets import QApplication, QMainWindow,QWidget,QMessageBox,QDialog,QInputDialog,QVBoxLayout, QTableWidget, QTableWidgetItem, QHeaderView, QProgressDialog
+from PyQt6.QtCore import QThread,pyqtSignal,QTimer,QTime,Qt
+from PyQt6.QtGui import QFont, QBrush, QColor
+
+
 from cryptography.fernet import Fernet
 
 # 다크테마 사용법 : pip install pyqtdarktheme
@@ -26,41 +52,6 @@ import smtplib
 from email.message import EmailMessage
 import socket
 
-from PySide6.QtCore import (
-    QCoreApplication,
-    QDate,
-    QDateTime,
-    QLocale,
-    QMetaObject,
-    QObject,
-    QPoint,
-    QRect,
-    QSize,
-    QTime,
-    QUrl,
-    Qt,
-)
-from PySide6.QtGui import (
-    QBrush,
-    QColor,
-    QConicalGradient,
-    QCursor,
-    QFont,
-    QFontDatabase,
-    QGradient,
-    QIcon,
-    QImage,
-    QKeySequence,
-    QLinearGradient,
-    QPainter,
-    QPalette,
-    QPixmap,
-    QRadialGradient,
-    QTransform,
-)
-from PySide6.QtWidgets import *
-
-from PySide6.QtCore import QTimer
 
 import os
 import sys
@@ -87,6 +78,7 @@ driver = webdriver.Chrome(options=options)
 driver.get("https://onestop.sejong.go.kr/Usr/main/main.do")
 # 페이지 로딩을 기다려 주자!
 driver.implicitly_wait(time_to_wait=1)
+driver.set_window_size(500, 800)
 
 # 팝업창 닫기
 # driver.execute_script("$('#mb-row').css('display','none')")
@@ -98,10 +90,13 @@ driver.implicitly_wait(time_to_wait=1)
 ##################################################
 
 # 동작 하나당 시간 간격(느린 컴퓨터 및 브라우저에서 돔생성 이전에 클릭 방지)
-actionTime = 0.4
+actionTime = 0.5
+inputTime = 0.7
+# 사용자인증 체크
+userAuthCheck = False
 
 # 현재 애플리케이션 버전
-current_version = "2.1.0"
+current_version = "2.5.1"
 
 accessUser_Mac_Adress = [
     "84:7b:57:6a:e6:8a",
@@ -245,7 +240,12 @@ class DataHandler:
         cptName = platform.node()
         processor = platform.processor()
         hostname = socket.gethostname()
-        ip_address = socket.gethostbyname(hostname)
+        try:
+            ip_address = socket.gethostbyname(hostname)
+        except socket.gaierror:
+            print(f"Hostname {hostname} could not be resolved. Check the hostname and network connection.")
+            # 적절한 오류 처리나 대체 로직을 여기에 구현합니다.
+
         userName = getpass.getuser()
 
         computer_info = {
@@ -506,366 +506,295 @@ class TennisScheduleWindow(QWidget):
 
 
 class MainWindow(QMainWindow):
-    def __init__(self) -> None:
-        super().__init__()
+    def __init__(self):
+        super(MainWindow, self).__init__()
+        self.setupUi()  # UI 설정 함수 호출
+        # 창위치 변경
+        self.move(1350, 200)
 
+    def setupUi(self):
         # 앱 타이틀
         self.setWindowTitle(f"세종시 통합예약 시스템 도우미 v{current_version}")
-        self.setWindowModality(Qt.NonModal)
+        # self.setWindowModality(Qt.NonModal)
 
         ##################################################
         # UI 시작
         ##################################################
-        self.resize(485, 861)
-        self.centralwidget = QWidget(self)
+        self.setObjectName("MainWindow")
+        self.setWindowModality(QtCore.Qt.WindowModality.NonModal)
+        self.resize(482, 868)
+        self.centralwidget = QtWidgets.QWidget(parent=self)
         self.centralwidget.setObjectName("centralwidget")
-        self.titleLbl = QLabel(self.centralwidget)
-        self.titleLbl.setObjectName("titleLbl")
-        self.titleLbl.setGeometry(QRect(20, 10, 351, 41))
-        font = QFont()
+        self.titleLbl = QtWidgets.QLabel(parent=self.centralwidget)
+        self.titleLbl.setGeometry(QtCore.QRect(20, 10, 351, 41))
+        font = QtGui.QFont()
         font.setPointSize(18)
         self.titleLbl.setFont(font)
-        self.accountGb = QGroupBox(self.centralwidget)
+        self.titleLbl.setObjectName("titleLbl")
+        self.accountGb = QtWidgets.QGroupBox(parent=self.centralwidget)
+        self.accountGb.setGeometry(QtCore.QRect(30, 60, 431, 71))
+        font = QtGui.QFont()
+        font.setPointSize(13)
+        self.accountGb.setFont(font)
         self.accountGb.setObjectName("accountGb")
-        self.accountGb.setGeometry(QRect(30, 60, 431, 71))
-        font1 = QFont()
-        font1.setPointSize(13)
-        self.accountGb.setFont(font1)
-        self.idLbl = QLabel(self.accountGb)
+        self.idLbl = QtWidgets.QLabel(parent=self.accountGb)
+        self.idLbl.setGeometry(QtCore.QRect(30, 30, 60, 31))
+        font = QtGui.QFont()
+        font.setPointSize(13)
+        self.idLbl.setFont(font)
         self.idLbl.setObjectName("idLbl")
-        self.idLbl.setGeometry(QRect(30, 30, 60, 31))
-        self.idLbl.setFont(font1)
-        self.idCb = QComboBox(self.accountGb)
+        self.idCb = QtWidgets.QComboBox(parent=self.accountGb)
+        self.idCb.setGeometry(QtCore.QRect(110, 30, 171, 31))
         self.idCb.setObjectName("idCb")
-        self.idCb.setGeometry(QRect(110, 30, 171, 31))
-        self.addAccountBtn = QPushButton(self.accountGb)
+        self.addAccountBtn = QtWidgets.QPushButton(parent=self.accountGb)
+        self.addAccountBtn.setGeometry(QtCore.QRect(290, 30, 61, 31))
+        font = QtGui.QFont()
+        font.setPointSize(8)
+        self.addAccountBtn.setFont(font)
         self.addAccountBtn.setObjectName("addAccountBtn")
-        self.addAccountBtn.setGeometry(QRect(290, 30, 61, 31))
-        font2 = QFont()
-        font2.setPointSize(8)
-        self.addAccountBtn.setFont(font2)
-        self.deleteAccountBtn = QPushButton(self.accountGb)
+        self.deleteAccountBtn = QtWidgets.QPushButton(parent=self.accountGb)
+        self.deleteAccountBtn.setGeometry(QtCore.QRect(360, 30, 61, 31))
+        font = QtGui.QFont()
+        font.setPointSize(8)
+        self.deleteAccountBtn.setFont(font)
         self.deleteAccountBtn.setObjectName("deleteAccountBtn")
-        self.deleteAccountBtn.setGeometry(QRect(360, 30, 61, 31))
-        self.deleteAccountBtn.setFont(font2)
-        self.label_3 = QLabel(self.centralwidget)
+        self.label_3 = QtWidgets.QLabel(parent=self.centralwidget)
+        self.label_3.setGeometry(QtCore.QRect(260, 150, 60, 16))
+        self.label_3.setText("")
         self.label_3.setObjectName("label_3")
-        self.label_3.setGeometry(QRect(260, 150, 60, 16))
-        self.reserve1Gb = QGroupBox(self.centralwidget)
+        self.reserve1Gb = QtWidgets.QGroupBox(parent=self.centralwidget)
+        self.reserve1Gb.setGeometry(QtCore.QRect(30, 130, 431, 181))
+        font = QtGui.QFont()
+        font.setPointSize(13)
+        self.reserve1Gb.setFont(font)
         self.reserve1Gb.setObjectName("reserve1Gb")
-        self.reserve1Gb.setGeometry(QRect(30, 130, 431, 181))
-        self.reserve1Gb.setFont(font1)
-        self.date1Lbl = QLabel(self.reserve1Gb)
+        self.date1Lbl = QtWidgets.QLabel(parent=self.reserve1Gb)
+        self.date1Lbl.setGeometry(QtCore.QRect(30, 55, 60, 30))
+        font = QtGui.QFont()
+        font.setPointSize(13)
+        self.date1Lbl.setFont(font)
         self.date1Lbl.setObjectName("date1Lbl")
-        self.date1Lbl.setGeometry(QRect(30, 55, 60, 30))
-        self.date1Lbl.setFont(font1)
-        self.time1Lbl = QLabel(self.reserve1Gb)
+        self.time1Lbl = QtWidgets.QLabel(parent=self.reserve1Gb)
+        self.time1Lbl.setGeometry(QtCore.QRect(30, 85, 60, 30))
+        font = QtGui.QFont()
+        font.setPointSize(13)
+        self.time1Lbl.setFont(font)
         self.time1Lbl.setObjectName("time1Lbl")
-        self.time1Lbl.setGeometry(QRect(30, 85, 60, 30))
-        self.time1Lbl.setFont(font1)
-        self.tennisPlace1Lbl = QLabel(self.reserve1Gb)
+        self.tennisPlace1Lbl = QtWidgets.QLabel(parent=self.reserve1Gb)
+        self.tennisPlace1Lbl.setGeometry(QtCore.QRect(30, 120, 81, 20))
+        font = QtGui.QFont()
+        font.setPointSize(13)
+        self.tennisPlace1Lbl.setFont(font)
         self.tennisPlace1Lbl.setObjectName("tennisPlace1Lbl")
-        self.tennisPlace1Lbl.setGeometry(QRect(30, 120, 81, 20))
-        self.tennisPlace1Lbl.setFont(font1)
-        self.date1Cb = QComboBox(self.reserve1Gb)
+        self.date1Cb = QtWidgets.QComboBox(parent=self.reserve1Gb)
+        self.date1Cb.setGeometry(QtCore.QRect(160, 60, 231, 26))
         self.date1Cb.setObjectName("date1Cb")
-        self.date1Cb.setGeometry(QRect(160, 60, 231, 26))
-        self.time1Cb = QComboBox(self.reserve1Gb)
+        self.time1Cb = QtWidgets.QComboBox(parent=self.reserve1Gb)
+        self.time1Cb.setGeometry(QtCore.QRect(160, 90, 231, 26))
         self.time1Cb.setObjectName("time1Cb")
-        self.time1Cb.setGeometry(QRect(160, 90, 231, 26))
-        self.tennisPlace1Cb = QComboBox(self.reserve1Gb)
+        self.tennisPlace1Cb = QtWidgets.QComboBox(parent=self.reserve1Gb)
+        self.tennisPlace1Cb.setGeometry(QtCore.QRect(160, 120, 231, 26))
         self.tennisPlace1Cb.setObjectName("tennisPlace1Cb")
-        self.tennisPlace1Cb.setGeometry(QRect(160, 120, 231, 26))
-        self.reserveYNLbl1 = QLabel(self.reserve1Gb)
+        self.reserveYNLbl1 = QtWidgets.QLabel(parent=self.reserve1Gb)
+        self.reserveYNLbl1.setGeometry(QtCore.QRect(30, 150, 141, 21))
         self.reserveYNLbl1.setObjectName("reserveYNLbl1")
-        self.reserveYNLbl1.setGeometry(QRect(30, 150, 141, 21))
-        self.reserveChkBtn1 = QPushButton(self.reserve1Gb)
+        self.reserveChkBtn1 = QtWidgets.QPushButton(parent=self.reserve1Gb)
+        self.reserveChkBtn1.setGeometry(QtCore.QRect(30, 28, 361, 23))
+        font = QtGui.QFont()
+        font.setPointSize(9)
+        self.reserveChkBtn1.setFont(font)
         self.reserveChkBtn1.setObjectName("reserveChkBtn1")
-        self.reserveChkBtn1.setGeometry(QRect(30, 28, 361, 23))
-        font3 = QFont()
-        font3.setPointSize(9)
-        self.reserveChkBtn1.setFont(font3)
-        self.reserveMsgLbl1 = QLabel(self.reserve1Gb)
+        self.reserveMsgLbl1 = QtWidgets.QLabel(parent=self.reserve1Gb)
+        self.reserveMsgLbl1.setGeometry(QtCore.QRect(160, 150, 221, 16))
+        self.reserveMsgLbl1.setText("")
         self.reserveMsgLbl1.setObjectName("reserveMsgLbl1")
-        self.reserveMsgLbl1.setGeometry(QRect(160, 150, 221, 16))
-        self.reserve2Gb = QGroupBox(self.centralwidget)
+        self.reserve2Gb = QtWidgets.QGroupBox(parent=self.centralwidget)
+        self.reserve2Gb.setGeometry(QtCore.QRect(30, 320, 431, 181))
+        font = QtGui.QFont()
+        font.setPointSize(13)
+        self.reserve2Gb.setFont(font)
         self.reserve2Gb.setObjectName("reserve2Gb")
-        self.reserve2Gb.setGeometry(QRect(30, 320, 431, 181))
-        self.reserve2Gb.setFont(font1)
-        self.date2Lbl = QLabel(self.reserve2Gb)
+        self.date2Lbl = QtWidgets.QLabel(parent=self.reserve2Gb)
+        self.date2Lbl.setGeometry(QtCore.QRect(30, 60, 60, 20))
+        font = QtGui.QFont()
+        font.setPointSize(13)
+        self.date2Lbl.setFont(font)
         self.date2Lbl.setObjectName("date2Lbl")
-        self.date2Lbl.setGeometry(QRect(30, 60, 60, 20))
-        self.date2Lbl.setFont(font1)
-        self.time2Lbl = QLabel(self.reserve2Gb)
+        self.time2Lbl = QtWidgets.QLabel(parent=self.reserve2Gb)
+        self.time2Lbl.setGeometry(QtCore.QRect(30, 90, 60, 20))
+        font = QtGui.QFont()
+        font.setPointSize(13)
+        self.time2Lbl.setFont(font)
         self.time2Lbl.setObjectName("time2Lbl")
-        self.time2Lbl.setGeometry(QRect(30, 90, 60, 20))
-        self.time2Lbl.setFont(font1)
-        self.tennisPlace2Lbl = QLabel(self.reserve2Gb)
+        self.tennisPlace2Lbl = QtWidgets.QLabel(parent=self.reserve2Gb)
+        self.tennisPlace2Lbl.setGeometry(QtCore.QRect(30, 120, 81, 20))
+        font = QtGui.QFont()
+        font.setPointSize(13)
+        self.tennisPlace2Lbl.setFont(font)
         self.tennisPlace2Lbl.setObjectName("tennisPlace2Lbl")
-        self.tennisPlace2Lbl.setGeometry(QRect(30, 120, 81, 20))
-        self.tennisPlace2Lbl.setFont(font1)
-        self.date2Cb = QComboBox(self.reserve2Gb)
+        self.date2Cb = QtWidgets.QComboBox(parent=self.reserve2Gb)
+        self.date2Cb.setGeometry(QtCore.QRect(160, 60, 231, 26))
         self.date2Cb.setObjectName("date2Cb")
-        self.date2Cb.setGeometry(QRect(160, 60, 231, 26))
-        self.time2Cb = QComboBox(self.reserve2Gb)
+        self.time2Cb = QtWidgets.QComboBox(parent=self.reserve2Gb)
+        self.time2Cb.setGeometry(QtCore.QRect(160, 90, 231, 26))
         self.time2Cb.setObjectName("time2Cb")
-        self.time2Cb.setGeometry(QRect(160, 90, 231, 26))
-        self.tennisPlace2Cb = QComboBox(self.reserve2Gb)
+        self.tennisPlace2Cb = QtWidgets.QComboBox(parent=self.reserve2Gb)
+        self.tennisPlace2Cb.setGeometry(QtCore.QRect(160, 120, 231, 26))
         self.tennisPlace2Cb.setObjectName("tennisPlace2Cb")
-        self.tennisPlace2Cb.setGeometry(QRect(160, 120, 231, 26))
-        self.reserveChbox2 = QCheckBox(self.reserve2Gb)
+        self.reserveChbox2 = QtWidgets.QCheckBox(parent=self.reserve2Gb)
+        self.reserveChbox2.setGeometry(QtCore.QRect(100, 2, 21, 16))
+        self.reserveChbox2.setText("")
         self.reserveChbox2.setObjectName("reserveChbox2")
-        self.reserveChbox2.setGeometry(QRect(100, 2, 21, 16))
-        self.reserveYNLbl2 = QLabel(self.reserve2Gb)
+        self.reserveYNLbl2 = QtWidgets.QLabel(parent=self.reserve2Gb)
+        self.reserveYNLbl2.setGeometry(QtCore.QRect(30, 150, 141, 21))
         self.reserveYNLbl2.setObjectName("reserveYNLbl2")
-        self.reserveYNLbl2.setGeometry(QRect(30, 150, 141, 21))
-        self.reserveChkBtn2 = QPushButton(self.reserve2Gb)
+        self.reserveChkBtn2 = QtWidgets.QPushButton(parent=self.reserve2Gb)
+        self.reserveChkBtn2.setGeometry(QtCore.QRect(30, 30, 361, 23))
+        font = QtGui.QFont()
+        font.setPointSize(9)
+        self.reserveChkBtn2.setFont(font)
         self.reserveChkBtn2.setObjectName("reserveChkBtn2")
-        self.reserveChkBtn2.setGeometry(QRect(30, 30, 361, 23))
-        self.reserveChkBtn2.setFont(font3)
-        self.reserveMsgLbl2 = QLabel(self.reserve2Gb)
+        self.reserveMsgLbl2 = QtWidgets.QLabel(parent=self.reserve2Gb)
+        self.reserveMsgLbl2.setGeometry(QtCore.QRect(170, 152, 221, 16))
+        self.reserveMsgLbl2.setText("")
         self.reserveMsgLbl2.setObjectName("reserveMsgLbl2")
-        self.reserveMsgLbl2.setGeometry(QRect(170, 152, 221, 16))
-        self.noticeGb = QGroupBox(self.centralwidget)
+        self.noticeGb = QtWidgets.QGroupBox(parent=self.centralwidget)
+        self.noticeGb.setGeometry(QtCore.QRect(30, 530, 431, 161))
+        font = QtGui.QFont()
+        font.setPointSize(13)
+        self.noticeGb.setFont(font)
         self.noticeGb.setObjectName("noticeGb")
-        self.noticeGb.setGeometry(QRect(30, 530, 431, 161))
-        self.noticeGb.setFont(font1)
-        self.noticeLbl4 = QLabel(self.noticeGb)
+        self.noticeLbl4 = QtWidgets.QLabel(parent=self.noticeGb)
+        self.noticeLbl4.setGeometry(QtCore.QRect(10, 50, 411, 16))
+        font = QtGui.QFont()
+        font.setPointSize(9)
+        self.noticeLbl4.setFont(font)
         self.noticeLbl4.setObjectName("noticeLbl4")
-        self.noticeLbl4.setGeometry(QRect(10, 50, 411, 16))
-        self.noticeLbl4.setFont(font3)
-        self.noticeLbl1 = QLabel(self.noticeGb)
+        self.noticeLbl1 = QtWidgets.QLabel(parent=self.noticeGb)
+        self.noticeLbl1.setGeometry(QtCore.QRect(10, 27, 391, 20))
+        font = QtGui.QFont()
+        font.setPointSize(9)
+        self.noticeLbl1.setFont(font)
         self.noticeLbl1.setObjectName("noticeLbl1")
-        self.noticeLbl1.setGeometry(QRect(10, 27, 391, 20))
-        self.noticeLbl1.setFont(font3)
-        self.noticeLbl5 = QLabel(self.noticeGb)
+        self.noticeLbl5 = QtWidgets.QLabel(parent=self.noticeGb)
+        self.noticeLbl5.setGeometry(QtCore.QRect(10, 70, 411, 16))
+        font = QtGui.QFont()
+        font.setPointSize(9)
+        self.noticeLbl5.setFont(font)
         self.noticeLbl5.setObjectName("noticeLbl5")
-        self.noticeLbl5.setGeometry(QRect(10, 70, 411, 16))
-        self.noticeLbl5.setFont(font3)
-        self.noticeLbl6 = QLabel(self.noticeGb)
+        self.noticeLbl6 = QtWidgets.QLabel(parent=self.noticeGb)
+        self.noticeLbl6.setGeometry(QtCore.QRect(10, 90, 411, 16))
+        font = QtGui.QFont()
+        font.setPointSize(9)
+        self.noticeLbl6.setFont(font)
         self.noticeLbl6.setObjectName("noticeLbl6")
-        self.noticeLbl6.setGeometry(QRect(10, 90, 411, 16))
-        self.noticeLbl6.setFont(font3)
-        self.noticeLbl8_2 = QLabel(self.noticeGb)
+        self.noticeLbl8_2 = QtWidgets.QLabel(parent=self.noticeGb)
+        self.noticeLbl8_2.setGeometry(QtCore.QRect(10, 110, 411, 16))
+        font = QtGui.QFont()
+        font.setPointSize(9)
+        self.noticeLbl8_2.setFont(font)
         self.noticeLbl8_2.setObjectName("noticeLbl8_2")
-        self.noticeLbl8_2.setGeometry(QRect(10, 110, 411, 16))
-        self.noticeLbl8_2.setFont(font3)
-        self.noticeLbl8_3 = QLabel(self.noticeGb)
+        self.noticeLbl8_3 = QtWidgets.QLabel(parent=self.noticeGb)
+        self.noticeLbl8_3.setGeometry(QtCore.QRect(10, 130, 411, 16))
+        font = QtGui.QFont()
+        font.setPointSize(9)
+        self.noticeLbl8_3.setFont(font)
         self.noticeLbl8_3.setObjectName("noticeLbl8_3")
-        self.noticeLbl8_3.setGeometry(QRect(10, 130, 411, 16))
-        self.noticeLbl8_3.setFont(font3)
-        self.coutionLbl = QLabel(self.centralwidget)
+        self.coutionLbl = QtWidgets.QLabel(parent=self.centralwidget)
+        self.coutionLbl.setGeometry(QtCore.QRect(230, 810, 231, 20))
+        font = QtGui.QFont()
+        font.setPointSize(7)
+        font.setBold(False)
+        font.setItalic(True)
+        font.setWeight(50)
+        font.setKerning(True)
+        self.coutionLbl.setFont(font)
         self.coutionLbl.setObjectName("coutionLbl")
-        self.coutionLbl.setGeometry(QRect(190, 815, 261, 20))
-        font4 = QFont()
-        font4.setPointSize(7)
-        font4.setBold(False)
-        font4.setItalic(True)
-        font4.setKerning(True)
-        self.coutionLbl.setFont(font4)
-        self.line2 = QFrame(self.centralwidget)
+        self.line2 = QtWidgets.QFrame(parent=self.centralwidget)
+        self.line2.setGeometry(QtCore.QRect(30, 790, 421, 20))
+        self.line2.setFrameShape(QtWidgets.QFrame.Shape.HLine)
+        self.line2.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
         self.line2.setObjectName("line2")
-        self.line2.setGeometry(QRect(30, 795, 421, 20))
-        self.line2.setFrameShape(QFrame.HLine)
-        self.line2.setFrameShadow(QFrame.Sunken)
-        self.loginBtn = QPushButton(self.centralwidget)
+        self.loginBtn = QtWidgets.QPushButton(parent=self.centralwidget)
+        self.loginBtn.setGeometry(QtCore.QRect(40, 705, 181, 41))
+        font = QtGui.QFont()
+        font.setPointSize(13)
+        self.loginBtn.setFont(font)
         self.loginBtn.setObjectName("loginBtn")
-        self.loginBtn.setGeometry(QRect(40, 705, 181, 41))
-        self.loginBtn.setFont(font1)
-        self.autoReserveBtn = QPushButton(self.centralwidget)
+        self.autoReserveBtn = QtWidgets.QPushButton(parent=self.centralwidget)
+        self.autoReserveBtn.setGeometry(QtCore.QRect(250, 750, 91, 41))
+        font = QtGui.QFont()
+        font.setPointSize(9)
+        self.autoReserveBtn.setFont(font)
         self.autoReserveBtn.setObjectName("autoReserveBtn")
-        self.autoReserveBtn.setGeometry(QRect(250, 750, 91, 41))
-        self.autoReserveBtn.setFont(font3)
-        self.selfReserveBtn = QPushButton(self.centralwidget)
+        self.selfReserveBtn = QtWidgets.QPushButton(parent=self.centralwidget)
+        self.selfReserveBtn.setGeometry(QtCore.QRect(250, 705, 181, 41))
+        font = QtGui.QFont()
+        font.setPointSize(13)
+        self.selfReserveBtn.setFont(font)
         self.selfReserveBtn.setObjectName("selfReserveBtn")
-        self.selfReserveBtn.setGeometry(QRect(250, 705, 181, 41))
-        self.selfReserveBtn.setFont(font1)
-        self.timeEdit = QTimeEdit(self.centralwidget)
+        self.timeEdit = QtWidgets.QTimeEdit(parent=self.centralwidget)
+        self.timeEdit.setGeometry(QtCore.QRect(100, 760, 118, 24))
         self.timeEdit.setObjectName("timeEdit")
-        self.timeEdit.setGeometry(QRect(100, 760, 118, 24))
-        self.timeSetLbl = QLabel(self.centralwidget)
+        self.timeSetLbl = QtWidgets.QLabel(parent=self.centralwidget)
+        self.timeSetLbl.setGeometry(QtCore.QRect(30, 763, 71, 16))
         self.timeSetLbl.setObjectName("timeSetLbl")
-        self.timeSetLbl.setGeometry(QRect(30, 763, 71, 16))
-        self.currentTimeLbl = QLabel(self.centralwidget)
+        self.currentTimeLbl = QtWidgets.QLabel(parent=self.centralwidget)
+        self.currentTimeLbl.setGeometry(QtCore.QRect(30, 810, 131, 16))
         self.currentTimeLbl.setObjectName("currentTimeLbl")
-        self.currentTimeLbl.setGeometry(QRect(30, 815, 131, 16))
-        self.stopAutoReserveBtn = QPushButton(self.centralwidget)
+        self.stopAutoReserveBtn = QtWidgets.QPushButton(parent=self.centralwidget)
+        self.stopAutoReserveBtn.setGeometry(QtCore.QRect(340, 750, 91, 41))
+        font = QtGui.QFont()
+        font.setPointSize(9)
+        self.stopAutoReserveBtn.setFont(font)
         self.stopAutoReserveBtn.setObjectName("stopAutoReserveBtn")
-        self.stopAutoReserveBtn.setGeometry(QRect(340, 750, 91, 41))
-        self.stopAutoReserveBtn.setFont(font3)
-        self.darkModeChBox = QCheckBox(self.centralwidget)
+        self.darkModeChBox = QtWidgets.QCheckBox(parent=self.centralwidget)
+        self.darkModeChBox.setGeometry(QtCore.QRect(380, 25, 81, 16))
         self.darkModeChBox.setObjectName("darkModeChBox")
-        self.darkModeChBox.setGeometry(QRect(380, 25, 81, 16))
         self.setCentralWidget(self.centralwidget)
-        self.statusbar = QStatusBar(self)
+        self.statusbar = QtWidgets.QStatusBar(parent=self)
         self.statusbar.setObjectName("statusbar")
         self.setStatusBar(self.statusbar)
 
         self.retranslateUi(self)
-
-        QMetaObject.connectSlotsByName(self)
-        # setupUi
+        QtCore.QMetaObject.connectSlotsByName(self)
 
     def retranslateUi(self, MainWindow):
-        self.setWindowTitle(
-            QCoreApplication.translate(
-                "MainWindow",
-                "\uc138\uc885\uc2dc \ud1b5\ud569 \uc608\uc57d \uc2dc\uc2a4\ud15c \ub3c4\uc6b0\ubbf8 ",
-                None,
-            )
-        )
-        self.titleLbl.setText(
-            QCoreApplication.translate(
-                "MainWindow",
-                "\uc138\uc885\uc2dc \ud1b5\ud569 \uc608\uc57d \uc2dc\uc2a4\ud15c \ub3c4\uc6b0\ubbf8",
-                None,
-            )
-        )
-        self.accountGb.setTitle(
-            QCoreApplication.translate("MainWindow", "\uacc4\uc815\uc815\ubcf4", None)
-        )
-        self.idLbl.setText(
-            QCoreApplication.translate("MainWindow", "\uc544\uc774\ub514 : ", None)
-        )
-        self.addAccountBtn.setText(
-            QCoreApplication.translate("MainWindow", "\uacc4\uc815\ub4f1\ub85d", None)
-        )
-        self.deleteAccountBtn.setText(
-            QCoreApplication.translate("MainWindow", "\uacc4\uc815\uc0ad\uc81c", None)
-        )
-        self.label_3.setText("")
-        self.reserve1Gb.setTitle(
-            QCoreApplication.translate("MainWindow", "\uc608\uc57d\uc815\ubcf4 1", None)
-        )
-        self.date1Lbl.setText(
-            QCoreApplication.translate("MainWindow", "\ub0a0 \uc9dc : ", None)
-        )
-        self.time1Lbl.setText(
-            QCoreApplication.translate("MainWindow", "\uc2dc \uac04 : ", None)
-        )
-        self.tennisPlace1Lbl.setText(
-            QCoreApplication.translate(
-                "MainWindow", "\ud14c\ub2c8\uc2a4\uc7a5 : ", None
-            )
-        )
-        self.reserveYNLbl1.setText(
-            QCoreApplication.translate(
-                "MainWindow", "\uc608\uc57d\uac00\ub2a5 \uc5ec\ubd80  : ", None
-            )
-        )
-        self.reserveChkBtn1.setText(
-            QCoreApplication.translate(
-                "MainWindow", "\uc608\uc57d\uac00\ub2a5 \uc5ec\ubd80 \ud655\uc778", None
-            )
-        )
-        self.reserveMsgLbl1.setText("")
-        self.reserve2Gb.setTitle(
-            QCoreApplication.translate("MainWindow", "\uc608\uc57d\uc815\ubcf4 2", None)
-        )
-        self.date2Lbl.setText(
-            QCoreApplication.translate("MainWindow", "\ub0a0 \uc9dc : ", None)
-        )
-        self.time2Lbl.setText(
-            QCoreApplication.translate("MainWindow", "\uc2dc \uac04 : ", None)
-        )
-        self.tennisPlace2Lbl.setText(
-            QCoreApplication.translate(
-                "MainWindow", "\ud14c\ub2c8\uc2a4\uc7a5 : ", None
-            )
-        )
-        self.reserveChbox2.setText("")
-        self.reserveYNLbl2.setText(
-            QCoreApplication.translate(
-                "MainWindow", "\uc608\uc57d\uac00\ub2a5 \uc5ec\ubd80  : ", None
-            )
-        )
-        self.reserveChkBtn2.setText(
-            QCoreApplication.translate(
-                "MainWindow", "\uc608\uc57d\uac00\ub2a5 \uc5ec\ubd80 \ud655\uc778", None
-            )
-        )
-        self.reserveMsgLbl2.setText("")
-        self.noticeGb.setTitle(
-            QCoreApplication.translate("MainWindow", "\uc774\uc6a9\uc548\ub0b4", None)
-        )
-        self.noticeLbl4.setText(
-            QCoreApplication.translate(
-                "MainWindow",
-                "- \ud55c\uac1c \uc608\uc57d\uc2dc, \uc608\uc57d\uc815\ubcf4 1\ub9cc \uc124\uc815,\ub450\uac1c \uc608\uc57d\uc2dc, \uc608\uc57d\uc815\ubcf41,2 \ubaa8\ub450 \uc791\uc131",
-                None,
-            )
-        )
-        self.noticeLbl1.setText(
-            QCoreApplication.translate(
-                "MainWindow",
-                "- \ucd08\uae30 \ud504\ub85c\uadf8\ub7a8 \uc2e4\ud589 \uc2dc, \uacc4\uc815\ub4f1\ub85d \ud6c4 \ub85c\uadf8\uc778 \ubc0f \uc608\uc57d\ud558\uae30 \uc9c4\ud589",
-                None,
-            )
-        )
-        self.noticeLbl5.setText(
-            QCoreApplication.translate(
-                "MainWindow",
-                "- \ub85c\uadf8\uc778 \ubc84\ud2bc\uc744 \ud074\ub9ad\ud558\uc5ec \ub85c\uadf8\uc778 \ud6c4, \uc608\uc57d\ud558\uae30 \ubc84\ud2bc\uc744 \ub20c\ub7ec\uc11c \uc608\uc57d",
-                None,
-            )
-        )
-        self.noticeLbl6.setText(
-            QCoreApplication.translate(
-                "MainWindow",
-                "- \uc608\uc57d\uc2dc\uac04 \uc124\uc815 \ud6c4, \uc790\ub3d9\uc608\uc57d\ud558\uae30 \ud074\ub9ad\uc2dc \uc124\uc815\ub41c \uc2dc\uac04\uc5d0 \uc790\ub3d9\uc73c\ub85c \uc608\uc57d",
-                None,
-            )
-        )
+        _translate = QtCore.QCoreApplication.translate
+        self.setWindowTitle(_translate("MainWindow", "세종시 통합 예약 시스템 도우미 "))
+        self.titleLbl.setText(_translate("MainWindow", "세종시 통합 예약 시스템 도우미"))
+        self.accountGb.setTitle(_translate("MainWindow", "계정정보"))
+        self.idLbl.setText(_translate("MainWindow", "아이디 : "))
+        self.addAccountBtn.setText(_translate("MainWindow", "계정등록"))
+        self.deleteAccountBtn.setText(_translate("MainWindow", "계정삭제"))
+        self.reserve1Gb.setTitle(_translate("MainWindow", "예약정보 1"))
+        self.date1Lbl.setText(_translate("MainWindow", "날 짜 : "))
+        self.time1Lbl.setText(_translate("MainWindow", "시 간 : "))
+        self.tennisPlace1Lbl.setText(_translate("MainWindow", "테니스장 : "))
+        self.reserveYNLbl1.setText(_translate("MainWindow", "예약가능 여부  : "))
+        self.reserveChkBtn1.setText(_translate("MainWindow", "예약가능 여부 확인"))
+        self.reserve2Gb.setTitle(_translate("MainWindow", "예약정보 2"))
+        self.date2Lbl.setText(_translate("MainWindow", "날 짜 : "))
+        self.time2Lbl.setText(_translate("MainWindow", "시 간 : "))
+        self.tennisPlace2Lbl.setText(_translate("MainWindow", "테니스장 : "))
+        self.reserveYNLbl2.setText(_translate("MainWindow", "예약가능 여부  : "))
+        self.reserveChkBtn2.setText(_translate("MainWindow", "예약가능 여부 확인"))
+        self.noticeGb.setTitle(_translate("MainWindow", "이용안내"))
+        self.noticeLbl4.setText(_translate("MainWindow", "- 한개 예약시, 예약정보 1만 설정,두개 예약시, 예약정보1,2 모두 작성"))
+        self.noticeLbl1.setText(_translate("MainWindow", "- 초기 프로그램 실행 시, 계정등록 후 로그인 및 예약하기 진행"))
+        self.noticeLbl5.setText(_translate("MainWindow", "- 로그인 버튼을 클릭하여 로그인 후, 예약하기 버튼을 눌러서 예약"))
+        self.noticeLbl6.setText(_translate("MainWindow", "- 예약시간 설정 후, 자동예약하기 클릭시 설정된 시간에 자동으로 예약"))
         self.noticeLbl8_2.setText(
-            QCoreApplication.translate(
-                "MainWindow",
-                "- data.dat, data.dat.hash, key.key \ud30c\uc77c \ubcc0\uacbd \ubc0f  \uc0ad\uc81c \uc2dc \uacc4\uc815 \uc7ac\ub4f1\ub85d \ud544\uc694",
-                None,
-            )
-        )
-        self.noticeLbl8_3.setText(
-            QCoreApplication.translate(
-                "MainWindow",
-                "- \ub2e4\uc815\ub3d9\uacfc \uc804\uc758\uc0dd\ud65c\uacf5\uc6d0\uc758 \uacbd\uc6b0, \uc2dc\uac04\uc774 \ub2e4\ub978 \uad6c\uc7a5\uacfc \ub2e4\ub984 \uc608\uc57d\uc2dc \uc720\uc758",
-                None,
-            )
-        )
-        self.coutionLbl.setText(
-            QCoreApplication.translate(
-                "MainWindow",
-                "* \ubd80\uc815 \uc608\uc57d(\ub9e4\ud06c\ub85c)\uc73c\ub85c \uc778\ud55c \ubd88\uc774\uc775 \ubc1c\uc0dd\uc2dc \ucc45\uc784\uc9c0\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.",
-                None,
-            )
-        )
-        self.loginBtn.setText(
-            QCoreApplication.translate("MainWindow", "\ub85c\uadf8\uc778", None)
-        )
-        self.autoReserveBtn.setText(
-            QCoreApplication.translate(
-                "MainWindow", "\uc790\ub3d9\uc608\uc57d\uc2dc\uc791", None
-            )
-        )
-        self.selfReserveBtn.setText(
-            QCoreApplication.translate("MainWindow", "\uc608\uc57d\ud558\uae30", None)
-        )
-        self.timeSetLbl.setText(
-            QCoreApplication.translate(
-                "MainWindow", "\uc608\uc57d\uc2dc\uac04 : ", None
-            )
-        )
-        self.currentTimeLbl.setText(
-            QCoreApplication.translate(
-                "MainWindow", "\ud604\uc7ac\uc2dc\uac04 : ", None
-            )
-        )
-        self.stopAutoReserveBtn.setText(
-            QCoreApplication.translate(
-                "MainWindow", "\uc790\ub3d9\uc608\uc57d\uc911\uc9c0", None
-            )
-        )
-        self.darkModeChBox.setText(
-            QCoreApplication.translate("MainWindow", "\ub2e4\ud06c\ubaa8\ub4dc", None)
-        )
+            _translate("MainWindow", "- data.dat, data.dat.hash, key.key 파일 변경 및  삭제 시 계정 재등록 필요"))
+        self.noticeLbl8_3.setText(_translate("MainWindow", "- 다정동과 전의생활공원의 경우, 시간이 다른 구장과 다름 예약시 유의"))
+        self.coutionLbl.setText(_translate("MainWindow", "* 부정 예약(매크로)으로 인한 불이익 발생시 책임지지 않습니다.(1회 : 12개월 정지, 2회 : 영구정지"))
+        self.loginBtn.setText(_translate("MainWindow", "로그인"))
+        self.autoReserveBtn.setText(_translate("MainWindow", "자동예약시작"))
+        self.selfReserveBtn.setText(_translate("MainWindow", "예약하기"))
+        self.timeSetLbl.setText(_translate("MainWindow", "예약시간 : "))
+        self.currentTimeLbl.setText(_translate("MainWindow", "현재시간 : "))
+        self.stopAutoReserveBtn.setText(_translate("MainWindow", "자동예약중지"))
+        self.darkModeChBox.setText(_translate("MainWindow", "다크모드"))
 
         # retranslateUi
         ##################################################
@@ -883,12 +812,12 @@ class MainWindow(QMainWindow):
         ##################################################
 
         # 원격 버전을 확인하는 URL
-        version_url = "http://ns.hakumata.world/tennisHelper/appInfo.txt"
+        version_url = "https://raw.githubusercontent.com/dongqdev/tennisHelperFile/main/appInfo.txt"
 
         # 원격 버전 확인 및 JSON 파싱
         try:
             response = requests.get(version_url)
-            print(response)
+            print('[autoUpdate-check_Version] response : ', response)
             # response.raise_for_status()  # 오류가 있으면 예외를 발생시킵니다.
 
             # 인코딩이 utf-8이 아닌 경우 아래와 같이 디코딩을 시도합니다.
@@ -896,16 +825,14 @@ class MainWindow(QMainWindow):
             # remote_info = response.content.decode('utf-8')  # 2안
 
             remote_info = response.json()
-            print("remote_info", remote_info)
-            remote_version = remote_info.get(
-                "version", "0.0.0"
-            )  # 버전 정보가 없으면 '0.0.0'을 사용합니다.
+            print("[autoUpdate-check_Version remote_info", remote_info)
+            remote_version = remote_info.get("version", "0.0.0")
+            # 버전 정보가 없으면 '0.0.0'을 사용합니다.
             updateDate = remote_info.get("updateDate", "-")
             updateInfo = remote_info.get("updateInfo", "-")
-            print("remote_version", remote_version)
-            print("updateDate", updateDate)
-            print("updateInfo", updateInfo)
             # QMessageBox.information(None, "업데이트 완료",f"{updateInfo}\n\n{updateDate}");
+
+            update_Check_Info = {}
 
             # 버전 비교
             if current_version < remote_version:
@@ -935,32 +862,33 @@ class MainWindow(QMainWindow):
 
         compute_Info = data_Handler.get_computer_info()
 
-        if not (data_Handler.check_user_info(compute_Info["mac_address"])):
-            QMessageBox.information(None, "경고", "승인되지 않은 사용자 입니다.\n키 등록 후, 사용해 주세요")
-            keyTxt, ok = QInputDialog.getText(self, "프로그램 등록", "KEY:")
-            if ok:
-                if len(str(keyTxt)) == 0:
-                    QMessageBox.information(None, "에러", f"프로그램 키가 입력되지 않았습니다.")
-                else:
-                    resultText = data_Handler.upsert_user_info(
-                        compute_Info, str(keyTxt)
-                    )
-                    if resultText == "COMPLETE":
-                        QMessageBox.information(None, "안내", f"등록이 완료되었습니다.")
-                    elif resultText == "EXIST":
-                        QMessageBox.information(None, "안내", f"이미 등록된 사용자가 존재합니다.")
-                        sys.exit(1)
+        if(userAuthCheck == True):
+            if not (data_Handler.check_user_info(compute_Info["mac_address"])):
+                QMessageBox.information(None, "경고", "승인되지 않은 사용자 입니다.\n키 등록 후, 사용해 주세요")
+                keyTxt, ok = QInputDialog.getText(self, "프로그램 등록", "KEY:")
+                if ok:
+                    if len(str(keyTxt)) == 0:
+                        QMessageBox.information(None, "에러", f"프로그램 키가 입력되지 않았습니다.")
                     else:
-                        QMessageBox.information(None, "안내", f"키가 일치 하지 않습니다.")
-                        sys.exit(1)
+                        resultText = data_Handler.upsert_user_info(
+                            compute_Info, str(keyTxt)
+                        )
+                        if resultText == "COMPLETE":
+                            QMessageBox.information(None, "안내", f"등록이 완료되었습니다.")
+                        elif resultText == "EXIST":
+                            QMessageBox.information(None, "안내", f"이미 등록된 사용자가 존재합니다.")
+                            sys.exit(1)
+                        else:
+                            QMessageBox.information(None, "안내", f"키가 일치 하지 않습니다.")
+                            sys.exit(1)
+                else:
+                    sys.exit(1)
+            # if compute_Info["mac_address"] in accessUser_Mac_Adress:
+            #    print("접근 허용")
             else:
-                sys.exit(1)
-        # if compute_Info["mac_address"] in accessUser_Mac_Adress:
-        #    print("접근 허용")
-        else:
-            # QMessageBox.information(None, "경고", "승인되지 않은 사용자 입니다.")
-            # sys.exit(1)
-            print("승인된 사용자 입니다.")
+                # QMessageBox.information(None, "경고", "승인되지 않은 사용자 입니다.")
+                # sys.exit(1)
+                print("승인된 사용자 입니다.")
 
         ##################################################
         # 사용자 인증 종료
@@ -1091,16 +1019,16 @@ class MainWindow(QMainWindow):
         # 테니스장 설정 시작
         ##################################################
         tennisCourtList = {
-            "중앙공원1": "OP48220697364086712,0",
-            "중앙공원2": "OP48220697364086712,1",
-            "중앙공원3": "OP48220697364086712,2",
-            "중앙공원4": "OP48220697364086712,3",
-            "중앙공원5": "OP48220697364086712,4",
-            "중앙공원6": "OP48220697364086712,5",
-            "중앙공원7": "OP48220697364086712,6",
-            "중앙공원8": "OP48220697364086712,7",
-            "중앙공원9": "OP48220697364086712,8",
-            "중앙공원10": "OP48220697364086712,9",
+            "중앙공원1": "OP8374580375538171,0",
+            "중앙공원2": "OP8374580375538171,1",
+            "중앙공원3": "OP8374580375538171,2",
+            "중앙공원4": "OP8374580375538171,3",
+            "중앙공원5": "OP8374580375538171,4",
+            "중앙공원6": "OP8374580375538171,5",
+            "중앙공원7": "OP8374580375538171,6",
+            "중앙공원8": "OP8374580375538171,7",
+            "중앙공원9": "OP8374580375538171,8",
+            "중앙공원10": "OP8374580375538171,9",
             "수질복원센터A 테니스장1": "OP17028520651712824,0",
             "수질복원센터A 테니스장2": "OP21695037103696738,0",
             "수질복원센터A 테니스장3": "OP21166946437826537,0",
@@ -1110,27 +1038,27 @@ class MainWindow(QMainWindow):
             "수질복원센터A 테니스장7": "OP17028232109098739,0",
             "수질복원센터A 테니스장8": "OP21695037103696738,3",
             "수질복원센터A 테니스장9": "OP17028232109098739,1",
-            "금남 생활체육공원1": "OP17271926690114529,0",
-            "금남 생활체육공원2": "OP17271926690114529,1",
-            "금남 생활체육공원3": "OP17271926690114529,2",
-            "다정동 저류지 체육시설1 ": "OP17273881146249546,0",
-            "다정동 저류지 체육시설2 ": "OP17273881146249546,1",
-            "다정동 저류지 체육시설3 ": "OP17273881146249546,2",
-            "소정 테니스장 A": "OP46996723757808552,0",
-            "소정 테니스장 B": "OP46996723757808552,1",
-            "소정 테니스장 C": "OP46996723757808552,2",
+            "금남 생활체육공원1": "OP8789086424809791,0",
+            "금남 생활체육공원2": "OP8789086424809791,1",
+            "금남 생활체육공원3": "OP8789086424809791,2",
+            "다정동 저류지 체육시설1 ": "OP8789473875350117,0",
+            "다정동 저류지 체육시설2 ": "OP8789473875350117,1",
+            "다정동 저류지 체육시설3 ": "OP8789473875350117,2",
+            "소정 테니스장 A": "OP9396378582681599,0",
+            "소정 테니스장 B": "OP9396378582681599,1",
+            "소정 테니스장 C": "OP9396378582681599,2",
             "수질복원센터B 1": "OP17028743154983862,0",
             "수질복원센터B 2": "OP21696357966701005,0",
             "수질복원센터B 3": "OP17028743154983862,1",
-            "전의생활체육공원1": "OP15716320733942054,0",
-            "전의생활체육공원2": "OP15716320733942054,1",
-            "전의생활체육공원3": "OP15716320733942054,2",
+            "전의생활체육공원1": "OP7750036806725368,0",
+            "전의생활체육공원2": "OP7750036806725368,1",
+            "전의생활체육공원3": "OP7750036806725368,2",
             "전의공공하수처리시설1": "OP10900259200163999,0",
-            "조치원 체육공원1": "OP16682360410452683,0",
-            "조치원 체육공원2": "OP16682360410452683,1",
-            "조치원 체육공원3": "OP16682360410452683,2",
-            "조치원 체육공원4": "OP16682360410452683,3",
-            "조치원 체육공원5": "OP16682360410452683,4",
+            "조치원 체육공원1": "OP8791200602627801,0",
+            "조치원 체육공원2": "OP8791200602627801,1",
+            "조치원 체육공원3": "OP8791200602627801,2",
+            "조치원 체육공원4": "OP8791200602627801,3",
+            "조치원 체육공원5": "OP8791200602627801,4",
         }
         for name, code in tennisCourtList.items():
             self.tennisPlace1Cb.addItem(name, code)
@@ -1253,36 +1181,24 @@ class MainWindow(QMainWindow):
 
         return tennisCountCheckList
 
+    ##################################################
+    # 자동 업데이트 함수 정의 시작
+    ##################################################
     # 배치 생성 함수
     def create_temporary_batch_file(self, new_exe):
         with open("update.bat", "w") as bat:
             bat.write(
                 f"""@echo off
-    timeout /t 2 /nobreak >nul
-    start "" "{new_exe}"
-    del "%~f0"
-    """
-            )
+                timeout /t 2 /nobreak >nul
+                start "" "{new_exe}"
+                del "%~f0"
+                """)
 
     # 다운로드 및 실행 함수
     def download_and_execute(self, remote_version):
-        """# 원격 .exe 파일 URL
-        remote_exe_url = 'http://ns.hakumata.world/tennisHelper/tennisHelper.exe'
-
-        # 다운로드할 파일 경로
-        local_exe_path = f'tennisHelper_v{remote_version}.exe'
-
-        # 파일 다운로드
-        response = requests.get(remote_exe_url)
-        with open(local_exe_path, 'wb') as file:
-            file.write(response.content)
-
-        # 현재 실행 중인 애플리케이션 종료 및 새 버전 실행
-        QCoreApplication.quit()
-        # QProcess.startDetached(local_exe_path)"""
-
         # 원격 .exe 파일 URL
-        url = "http://ns.hakumata.world/tennisHelper/tennisHelper.exe"
+        # url = "http://ns.hakumata.world/tennisHelper/tennisHelper.exe"
+        url = "https://github.com/dongqdev/tennisHelperFile/raw/main/tennisHelper.exe"
         # 다운로드할 파일 경로
         local_exe_path = f"tennisHelper_v{remote_version}.exe"
 
@@ -1311,6 +1227,10 @@ class MainWindow(QMainWindow):
             )
             subprocess.call(["update.bat"], shell=True)
             sys.exit(1)
+
+    ##################################################
+    # 자동 업데이트 함수 정의 종료
+    ##################################################
 
     def on_email_sent(self):
         # 이메일 전송이 완료되었을 때 수행할 작업
@@ -1349,21 +1269,30 @@ class MainWindow(QMainWindow):
 
     def deleteAccount_dialog_open(self):
         data_handler = DataHandler()
-        idTxt, ok = QInputDialog.getText(self, "계정삭제", "아이디:")
-        if ok:
-            if len(str(idTxt)) == 0:
-                QMessageBox.information(None, "에러", f"아이디가 입력되지 않았습니다.")
-            else:
-                QMessageBox.information(
-                    None, "안내", f"{data_handler.delete_user(str(idTxt))}"
-                )
 
-                self.idCb.clear()
-                # 계정 삭제 후 selectbox 리로드
+        # 현재 선택된 콤보박스 인덱스 확인
+        selected_index = self.idCb.currentIndex()
 
-                if data_handler.get_user_count() != 0:
-                    for user in data_handler.data["user_info"]:
-                        self.idCb.addItem(f"{user['id']}", f"{user['pw']}")
+        # 선택된 인덱스에 해당하는 아이디 가져오기
+        selected_id = self.idCb.itemText(selected_index)
+
+        # 예/아니오 대화상자를 표시하여 삭제 여부 확인
+        confirm = QMessageBox.question(
+            self,
+            "계정 삭제",
+            f"{selected_id}를 삭제하시겠습니까?",
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.No
+        )
+
+        if confirm == QMessageBox.StandardButton.Yes:
+            # 아이디 삭제
+            result = data_handler.delete_user(selected_id)
+            QMessageBox.information(None, "안내", result)
+
+            # 계정 삭제 후 selectbox 내 계정 삭제
+            self.idCb.removeItem(selected_index)
+
 
     def addAcount_dialog_open(self):
         idTxt, ok1 = QInputDialog.getText(self, "계정등록", "아이디:")
@@ -1386,12 +1315,18 @@ class MainWindow(QMainWindow):
                     else:
                         print(f"등록예정 계정 : {str(idTxt)} / {str(pwTxt)}")
                         DataHandler().add_user(str(idTxt), str(pwTxt))
-                        self.idCb.clear()
-                        # 계정 등록 후 selectbox 리로드
+                        # self.idCb.clear()
+
+                        # 계정정보 재등록
                         data_handler = DataHandler()
-                        if data_handler.get_user_count() != 0:
+                        user_count = data_handler.get_user_count()
+                        print(f"사용자 수: {user_count}")
+                        # self.idCb.addItem(f"{str(idTxt)}", f"{str(pwTxt)}")
+                        if user_count != 0:
                             for user in data_handler.data["user_info"]:
-                                self.idCb.addItem(f"{user['id']}", f"{user['pw']}")
+                                print(f"{user['id']}", f"{user['pw']}")
+                            self.idCb.addItem(str(idTxt), str(pwTxt))
+
 
     def updateTime(self):
         # 현재 시간 가져오기
@@ -1540,12 +1475,12 @@ class MainWindow(QMainWindow):
         print("===== 9. 매크로 알림창 동의 체크 시작 =====")
         driver.find_element(By.ID, "agreeCheck").click()
         print("===== 10. 매크로 알림창 동의 체크 완료 =====")
-        time.sleep(0.5)
+        time.sleep(inputTime)
         driver.find_element(
             By.XPATH, '//*[@id="mb-row"]/div/div/div/div/button'
         ).click()
         print("===== 11. 매크로 알림창 동의 확인 완료 =====")
-        time.sleep(0.5)
+        time.sleep(inputTime)
 
         # 예약사유 입력
         print("===== 12. 이용안내 동의 및 예약 사유 화면이동 =====")
@@ -1554,10 +1489,10 @@ class MainWindow(QMainWindow):
             By.XPATH, '//*[@id="content"]/div[3]/div[4]/div/div[1]/a/div'
         ).click()
         print("===== 13. 이용안내 동의 확인 완료 =====")
-        time.sleep(0.5)
+        time.sleep(inputTime)
         driver.find_element(By.ID, "resveResn").send_keys("개인운동")
         print("===== 14. 예약사유 입력 완료 =====")
-        time.sleep(0.5)
+        time.sleep(inputTime)
 
         # 유의사항 동의 및 예약
         driver.find_element(By.ID, "goReservation").click()
@@ -1662,12 +1597,12 @@ class MainWindow(QMainWindow):
         print("===== 9. 매크로 알림창 동의 체크 시작 =====")
         driver.find_element(By.ID, "agreeCheck").click()
         print("===== 10. 매크로 알림창 동의 체크 완료 =====")
-        time.sleep(0.5)
+        time.sleep(inputTime)
         driver.find_element(
             By.XPATH, '//*[@id="mb-row"]/div/div/div/div/button'
         ).click()
         print("===== 11. 매크로 알림창 동의 확인 완료 =====")
-        time.sleep(0.5)
+        time.sleep(inputTime)
 
         # 예약사유 입력
         print("===== 12. 이용안내 동의 및 예약 사유 화면이동 =====")
@@ -1676,10 +1611,10 @@ class MainWindow(QMainWindow):
             By.XPATH, '//*[@id="content"]/div[3]/div[4]/div/div[1]/a/div'
         ).click()
         print("===== 13. 이용안내 동의 확인 완료 =====")
-        time.sleep(0.5)
+        time.sleep(inputTime)
         driver.find_element(By.ID, "resveResn").send_keys("개인운동")
         print("===== 14. 예약사유 입력 완료 =====")
-        time.sleep(0.5)
+        time.sleep(inputTime)
 
         # 유의사항 동의 및 예약
         driver.find_element(By.ID, "goReservation").click()

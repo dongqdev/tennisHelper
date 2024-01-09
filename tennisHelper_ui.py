@@ -9,7 +9,6 @@ import time
 
 from PyQt6.QtWidgets import QMessageBox, QTimeEdit, QDialog
 
-
 # 다크테마 사용법 : pip install pyqtdarktheme
 import qdarktheme
 
@@ -20,9 +19,12 @@ from PySide6.QtCore import (
     QTime,
     Qt,
 )
-from PySide6.QtGui import QBrush, QColor, QFont
+from PySide6.QtGui import (
+    QBrush,
+    QColor,
+    QFont,
+)
 from PySide6.QtWidgets import *
-
 from PySide6.QtCore import QTimer
 
 import sys
@@ -629,7 +631,6 @@ class MainWindow(QMainWindow):
 
                 self.idCb.clear()
                 # 계정 삭제 후 selectbox 리로드
-
                 if self.data_handler.get_user_count() != 0:
                     for user in self.data_handler.data["user_info"]:
                         self.idCb.addItem(f"{user['id']}", f"{user['pw']}")
@@ -640,7 +641,7 @@ class MainWindow(QMainWindow):
             if len(str(idTxt)) == 0:
                 msg = QMessageBox()
                 msg.setIcon(QMessageBox.Icon.Critical)
-                msg.setText("아이디가 입력되지 않았습니다.")
+                msg.setText("[tennisHelper_ui-addAcount_dialog_open] 아이디가 입력되지 않았습니다.")
                 msg.setWindowTitle("Error")
                 msg.exec()
             else:
@@ -649,21 +650,44 @@ class MainWindow(QMainWindow):
                     if len(str(pwTxt)) == 0:
                         msg = QMessageBox()
                         msg.setIcon(QMessageBox.Icon.Critical)
-                        msg.setText("비밀번호가 입력되지 않았습니다.")
+                        msg.setText("[tennisHelper_ui-addAcount_dialog_open] 비밀번호가 입력되지 않았습니다.")
                         msg.setWindowTitle("Error")
                         msg.exec()
                     else:
-                        print(f"등록예정 계정 : {str(idTxt)} / {str(pwTxt)}")
+                        print(f"[tennisHelper_ui-addAcount_dialog_open] 등록예정 계정 : {str(idTxt)} / {str(pwTxt)}")
                         DataHandler().add_user(str(idTxt), str(pwTxt))
+                        print(f"[tennisHelper_ui-addAcount_dialog_open] 계정추가 테스트 성공 1 {self.idCb.count()}")
+                        # 계정정보 모두 삭제
                         self.idCb.clear()
                         # 계정 등록 후 selectbox 리로드
-                        if self.data_handler.get_user_count() != 0:
-                            dataHandler = DataHandler()
+                        data_handler = DataHandler()
+                        if data_handler.get_user_count() != 0:
+                            for user in data_handler.data["user_info"]:
+                                self.idCb.addItem(f"{user['id']}", f"{user['pw']}")
+
+                        print(f"[tennisHelper_ui-addAcount_dialog_open] 계정추가 테스트 성공 2 {self.idCb.count()}")
+                        '''
+                        if isinstance(self.idCb, QComboBox):
+                            print(f"[tennisHelper_ui-addAcount_dialog_open] 계정추가 테스트 성공 ")
+                            self.idCb.addItem(str(idTxt), str(pwTxt))
+                            # self.idCb는 QComboBox의 인스턴스입니다.
+                            # 여기에 원하는 작업을 수행하세요.
+                        else:
+                            print(f"[tennisHelper_ui-addAcount_dialog_open] 계정추가 테스트 오류발생 ")
+                            # self.idCb는 QComboBox의 인스턴스가 아닙니다.
+                            # 다른 처리 방식이 필요할 수 있습니다.
+
+
+                        
+                        self.dataHandler = DataHandler()
+                        if self.dataHandler.get_user_count() != 0:
+                            for user in self.dataHandler.data["user_info"]:
+                                print(f"[tennisHelper_ui-addAcountComplete] ID : {user['id']}, PW : {user['pw']}")
+                                self.idCb.addItem(f"{user['id']}", f"{user['pw']}")
                             print(
                                 f"[tennisHelper_ui-addAcount_dialog_open] 계정등록 완료-계정 갯수 : {self.data_handler.get_user_count()}"
                             )
-                            for user in dataHandler.data["user_info"]:
-                                self.idCb.addItem(f"{user['id']}", f"{user['pw']}")
+                        '''
 
     def updateTime(self):
         # 현재 시간 가져오기

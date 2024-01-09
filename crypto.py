@@ -74,7 +74,8 @@ data = [
 data_str = json.dumps(data)
 
 # 키 생성
-key = Fernet.generate_key()
+# key = Fernet.generate_key()
+key = b'XlLg32xNIN5PZB5lEH89ejUSNLQ1k52K-ptQ4LjI_8U='
 cipher_suite = Fernet(key)
 
 # 데이터 암호화

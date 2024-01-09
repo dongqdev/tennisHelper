@@ -178,6 +178,7 @@ class DataHandler:
             self.idCb.addItem(f"{user['id']}", f"{user['pw']}")"""
 
     def get_user_count(self):
+        self.__init__()
         return len(self.data["user_info"])
 
     def add_computer_info(self, computer_info):
