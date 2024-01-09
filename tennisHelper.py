@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 # UI 변환 명령어 : pyside6-uic ./tennisHelper.ui -p tennisHelper_UI.py >> UI2PY1.py
 # UI 변환 명령어 : pyside6-uic ./addAccountDialog.ui -p addAccountDialog.py >> UI2PY2.py
-# EXE 변환 명령어(MAC) : pyinstaller -w -F --icon=sejong_eng.ico -n tennisHelper tennisHelper.py
+# EXE 변환 명령어(MAC) : pyinstaller -w -F --icon=sejong_chn.ico -n tennisHelper tennisHelper.py
 # EXE 변환 명령어(Window) :  pyinstaller -w -F --icon=sejong_eng.ico -n tennisHelper_v tennisHelper.py
-# pyuic6 tennisHelper.ui -0 output.py
+# UI 변환 명령어 : pyuic6 tennisHelper.ui -0 output.py
 # 아래 문구 추가
 # 상단 :
 '''
@@ -78,7 +78,7 @@ driver = webdriver.Chrome(options=options)
 driver.get("https://onestop.sejong.go.kr/Usr/main/main.do")
 # 페이지 로딩을 기다려 주자!
 driver.implicitly_wait(time_to_wait=1)
-driver.set_window_size(500, 800)
+driver.set_window_size(800, 800)
 
 # 팝업창 닫기
 # driver.execute_script("$('#mb-row').css('display','none')")
@@ -96,7 +96,7 @@ inputTime = 0.7
 userAuthCheck = False
 
 # 현재 애플리케이션 버전
-current_version = "2.5.1"
+current_version = "2.2.6"
 
 accessUser_Mac_Adress = [
     "84:7b:57:6a:e6:8a",
