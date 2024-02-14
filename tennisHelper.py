@@ -506,7 +506,7 @@ class TennisScheduleWindow(QWidget):
 
 
 class MainWindow(QMainWindow):
-    '''
+
     def __init__(self):
         super(MainWindow, self).__init__()
         self.setupUi()  # UI 설정 함수 호출
@@ -520,6 +520,7 @@ class MainWindow(QMainWindow):
         self.setupUi()
         # 창위치 변경
         self.move(1350, 200)
+    '''
 
     def setupUi(self):
         # 앱 타이틀
