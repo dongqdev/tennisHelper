@@ -72,6 +72,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: /tennisHelper.ui
+          asset_path: ./dist/tennisHelper.ui
           asset_name: tennisHelper.ui
           asset_content_type: text/xml
