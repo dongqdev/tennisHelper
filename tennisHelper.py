@@ -1007,17 +1007,21 @@ class MainWindow(QMainWindow):
             self.time2Cb.addItem("%s:00 ~ %s:00" % (i, j), "%s:00 ~ %s:00" % (i, j))
 
         # 전의 생활공원의 경우 시간이 다름
-        self.time1Cb.addItem("===다정동용===", "")
+        self.time1Cb.addItem("===다정동===", "")
         self.time1Cb.addItem("09:00 ~ 10:00", "09:00 ~ 10:00")
-        self.time1Cb.addItem("===전의 생활공원용===", "")
+        self.time1Cb.addItem("===금남생활체육공원===", "")
+        self.time1Cb.addItem("06:00 ~ 08:00", "06:00 ~ 08:00")
+        self.time1Cb.addItem("===전의 생활공원===", "")
         self.time1Cb.addItem("09:00 ~ 11:00", "09:00 ~ 11:00")
         self.time1Cb.addItem("11:30 ~ 13:30", "11:30 ~ 13:30")
         self.time1Cb.addItem("14:00 ~ 16:00", "14:00 ~ 16:00")
         self.time1Cb.addItem("16:30 ~ 18:30", "16:30 ~ 18:30")
         self.time1Cb.addItem("19:00 ~ 21:00", "19:00 ~ 21:00")
-        self.time2Cb.addItem("===다정동용===", "")
+        self.time2Cb.addItem("===다정동===", "")
         self.time2Cb.addItem("09:00 ~ 10:00", "09:00 ~ 10:00")
-        self.time2Cb.addItem("===전의생활공원용===", "")
+        self.time2Cb.addItem("===금남생활체육공원===", "")
+        self.time2Cb.addItem("06:00 ~ 08:00", "06:00 ~ 08:00")
+        self.time2Cb.addItem("===전의생활공원===", "")
         self.time2Cb.addItem("09:00 ~ 11:00", "09:00 ~ 11:00")
         self.time2Cb.addItem("11:30 ~ 13:30", "11:30 ~ 13:30")
         self.time2Cb.addItem("14:00 ~ 16:00", "14:00 ~ 16:00")
@@ -1031,46 +1035,46 @@ class MainWindow(QMainWindow):
         # 테니스장 설정 시작
         ##################################################
         tennisCourtList = {
-            "중앙공원1": "OP8374580375538171,0",
-            "중앙공원2": "OP8374580375538171,1",
-            "중앙공원3": "OP8374580375538171,2",
-            "중앙공원4": "OP8374580375538171,3",
-            "중앙공원5": "OP8374580375538171,4",
-            "중앙공원6": "OP8374580375538171,5",
-            "중앙공원7": "OP8374580375538171,6",
-            "중앙공원8": "OP8374580375538171,7",
-            "중앙공원9": "OP8374580375538171,8",
-            "중앙공원10": "OP8374580375538171,9",
-            "수질복원센터A 테니스장1": "OP17028520651712824,0",
-            "수질복원센터A 테니스장2": "OP21695037103696738,0",
-            "수질복원센터A 테니스장3": "OP21166946437826537,0",
-            "수질복원센터A 테니스장4": "OP21695037103696738,1",
-            "수질복원센터A 테니스장5": "OP21703893297820968,0",
-            "수질복원센터A 테니스장6": "OP21695037103696738,2",
-            "수질복원센터A 테니스장7": "OP17028232109098739,0",
-            "수질복원센터A 테니스장8": "OP21695037103696738,3",
-            "수질복원센터A 테니스장9": "OP17028232109098739,1",
-            "금남 생활체육공원1": "OP8789086424809791,0",
-            "금남 생활체육공원2": "OP8789086424809791,1",
-            "금남 생활체육공원3": "OP8789086424809791,2",
-            "다정동 저류지 체육시설1 ": "OP8789473875350117,0",
-            "다정동 저류지 체육시설2 ": "OP8789473875350117,1",
-            "다정동 저류지 체육시설3 ": "OP8789473875350117,2",
-            "소정 테니스장 A": "OP9396378582681599,0",
-            "소정 테니스장 B": "OP9396378582681599,1",
-            "소정 테니스장 C": "OP9396378582681599,2",
-            "수질복원센터B 1": "OP17028743154983862,0",
-            "수질복원센터B 2": "OP21696357966701005,0",
-            "수질복원센터B 3": "OP17028743154983862,1",
-            "전의생활체육공원1": "OP7750036806725368,0",
-            "전의생활체육공원2": "OP7750036806725368,1",
-            "전의생활체육공원3": "OP7750036806725368,2",
-            "전의공공하수처리시설1": "OP10900259200163999,0",
-            "조치원 체육공원1": "OP8791200602627801,0",
-            "조치원 체육공원2": "OP8791200602627801,1",
-            "조치원 체육공원3": "OP8791200602627801,2",
-            "조치원 체육공원4": "OP8791200602627801,3",
-            "조치원 체육공원5": "OP8791200602627801,4",
+            "중앙공원 테니스장 1": "OP8374580375538171,0",
+            "중앙공원 테니스장 2": "OP8374580375538171,1",
+            "중앙공원 테니스장 3": "OP8374580375538171,2",
+            "중앙공원 테니스장 4": "OP8374580375538171,3",
+            "중앙공원 테니스장 5": "OP8374580375538171,4",
+            "중앙공원 테니스장 6": "OP8374580375538171,5",
+            "중앙공원 테니스장 7": "OP8374580375538171,6",
+            "중앙공원 테니스장 8": "OP8374580375538171,7",
+            "중앙공원 테니스장 9": "OP8374580375538171,8",
+            "중앙공원 테니스장 10": "OP8374580375538171,9",
+            "수질복원센터A 테니스장 코트1": "OP17028520651712824,0",
+            "수질복원센터A 테니스장 코트2": "OP21695037103696738,0",
+            "수질복원센터A 테니스장 코트3": "OP21166946437826537,0",
+            "수질복원센터A 테니스장 코트4": "OP21695037103696738,1",
+            "수질복원센터A 테니스장 코트5": "OP21703893297820968,0",
+            "수질복원센터A 테니스장 코트6": "OP21695037103696738,2",
+            "수질복원센터A 테니스장 코트7": "OP17028232109098739,0",
+            "수질복원센터A 테니스장 코트8": "OP21695037103696738,3",
+            "수질복원센터A 테니스장 코트9": "OP17028232109098739,1",
+            "금남 생활체육공원 테니스장 1번코트": "OP8789086424809791,0",
+            "금남 생활체육공원 테니스장 2번코트": "OP8789086424809791,1",
+            "금남 생활체육공원 테니스장 3번코트": "OP8789086424809791,2",
+            "다정동 저류지 체육시설 테니스장 1번코트": "OP8789473875350117,0",
+            "다정동 저류지 체육시설 테니스장 2번코트": "OP8789473875350117,1",
+            "다정동 저류지 체육시설 테니스장 3번코트 ": "OP8789473875350117,2",
+            "소정 테니스장 A코트": "OP9396378582681599,0",
+            "소정 테니스장 B코트": "OP9396378582681599,1",
+            "소정 테니스장 C코트": "OP9396378582681599,2",
+            "수질복원센터B 테니스장 코트1": "OP17028743154983862,0",
+            "수질복원센터B 테니스장 코트2": "OP21696357966701005,0",
+            "수질복원센터B 테니스장 코트3": "OP17028743154983862,1",
+            "전의생활체육공원 테니스장 1번코트": "OP7750036806725368,0",
+            "전의생활체육공원 테니스장 2번코트": "OP7750036806725368,1",
+            "전의생활체육공원 테니스장 3번코트": "OP7750036806725368,2",
+            "전의공공하수처리시설 테니스장 1코트": "OP10900259200163999,0",
+            "조치원 체육공원 테니스장 1번코트": "OP8791200602627801,0",
+            "조치원 체육공원 테니스장 2번코트": "OP8791200602627801,1",
+            "조치원 체육공원 테니스장 3번코트": "OP8791200602627801,2",
+            "조치원 체육공원 테니스장 4번코트": "OP8791200602627801,3",
+            "조치원 체육공원 테니스장 5번코트": "OP8791200602627801,4",
         }
         for name, code in tennisCourtList.items():
             self.tennisPlace1Cb.addItem(name, code)
@@ -1405,10 +1409,12 @@ class MainWindow(QMainWindow):
         date2 = str(self.date2Cb.currentData()).split(",")
         time2 = str(self.time2Cb.currentData())
         tennisPlaceInfo1 = str(self.tennisPlace1Cb.currentData())
+        tennisPlaceInfo2 = str(self.tennisPlace2Cb.currentData())
+        tennisCourtName1 = str(self.tennisPlace1Cb.currentText())
+        tennisCourtName2 = str(self.tennisPlace2Cb.currentText())
         tennisPlace1 = tennisPlaceInfo1.split(",")[0]
-        tennisCourt1 = tennisPlaceInfo1.split(",")[1]
-        tennisPlaceInfo2 = self.tennisPlace2Cb.currentData()
         tennisPlace2 = tennisPlaceInfo2.split(",")[0]
+        tennisCourt1 = tennisPlaceInfo1.split(",")[1]
         tennisCourt2 = tennisPlaceInfo2.split(",")[1]
 
         # 예약화면으로 이동
@@ -1443,13 +1449,26 @@ class MainWindow(QMainWindow):
         # 테니스장 시간 순서 변경으로 실제 시간 READ
         # document.querySelector("span").parentElement.parentElement.onclick()
         print("===== 6. 테니스 코트/시간 선택 시작 =====")
+
+        # "mtitle" 클래스를 가진 모든 span 태그 찾기
+        spans = driver.find_elements(By.CLASS_NAME, "mTitle")
+        span_texts = [span.text for span in spans]  # span의 텍스트를 리스트로 추출
+
+        print("span_texts : ",span_texts)
+
+        try:
+            tennisCourtIndex1 = span_texts.index(tennisCourtName1)  # 배열에서 tennisCourt 변수와 일치하는 요소의 인덱스 찾기
+            print(f"'{tennisCourtName1}'의 배열 내 순서: {tennisCourtIndex1}")
+        except ValueError:
+            print(f"'{tennisCourtName1}'을(를) 찾을 수 없습니다.")
+
         # driver.execute_script("document.querySelectorAll('#timeSection_' + " + time1 + ")[parseInt(" + tennisCourt1 + ")].click()")
         driver.execute_script(
             "var tempTimeEl = new Array(); document.querySelectorAll('span').forEach(function(arg,idx){ "
             "if(arg.innerText == '" + time1 + "'){ "
             "tempTimeEl.push(arg); }"
             "}); tempTimeEl["
-            + tennisCourt1
+            + str(tennisCourtIndex1)
             + "].parentElement.parentElement.onclick();"
         )
         print("===== 6. 테니스 코트/시간 선택 완료 =====")
@@ -1529,10 +1548,12 @@ class MainWindow(QMainWindow):
         date2 = str(self.date2Cb.currentData()).split(",")
         time2 = str(self.time2Cb.currentData())
         tennisPlaceInfo1 = str(self.tennisPlace1Cb.currentData())
+        tennisPlaceInfo2 = str(self.tennisPlace2Cb.currentData())
+        tennisCourtName1 = str(self.tennisPlace1Cb.currentText())
+        tennisCourtName2 = str(self.tennisPlace2Cb.currentText())
         tennisPlace1 = tennisPlaceInfo1.split(",")[0]
-        tennisCourt1 = tennisPlaceInfo1.split(",")[1]
-        tennisPlaceInfo2 = self.tennisPlace2Cb.currentData()
         tennisPlace2 = tennisPlaceInfo2.split(",")[0]
+        tennisCourt1 = tennisPlaceInfo1.split(",")[1]
         tennisCourt2 = tennisPlaceInfo2.split(",")[1]
 
         # 예약화면으로 이동
@@ -1568,12 +1589,24 @@ class MainWindow(QMainWindow):
         # document.querySelector("span").parentElement.parentElement.onclick()
         print("===== 6. 테니스 코트/시간 선택 시작 =====")
         # driver.execute_script("document.querySelectorAll('#timeSection_' + " + time1 + ")[parseInt(" + tennisCourt1 + ")].click()")
+
+        # "mtitle" 클래스를 가진 모든 span 태그 찾기
+        spans = driver.find_elements(By.CLASS_NAME, "mTitle")
+        span_texts = [span.text for span in spans]  # span의 텍스트를 리스트로 추출
+
+        try:
+            tennisCourtIndex2 = span_texts.index(tennisCourtName2)  # 배열에서 tennisCourt 변수와 일치하는 요소의 인덱스 찾기
+            print(f"'{tennisCourtName2}'의 배열 내 순서: {tennisCourtIndex2}")
+        except ValueError:
+            print(f"'{tennisCourtName2}'을(를) 찾을 수 없습니다.")
+
+        # driver.execute_script("document.querySelectorAll('#timeSection_' + " + time1 + ")[parseInt(" + tennisCourt1 + ")].click()")
         driver.execute_script(
             "var tempTimeEl = new Array(); document.querySelectorAll('span').forEach(function(arg,idx){ "
-            "if(arg.innerText == '" + time2 + "'){ "
-            "tempTimeEl.push(arg); }"
-            "}); tempTimeEl["
-            + tennisCourt2
+            "if(arg.innerText == '" + time1 + "'){ "
+                                              "tempTimeEl.push(arg); }"
+                                              "}); tempTimeEl["
+            + str(tennisCourtIndex2)
             + "].parentElement.parentElement.onclick();"
         )
         print("===== 6. 테니스 코트/시간 선택 완료 =====")
