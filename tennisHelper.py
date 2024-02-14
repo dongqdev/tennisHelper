@@ -529,7 +529,7 @@ class MainWindow(QMainWindow):
         ##################################################
         # UI 시작
         ##################################################
-
+        '''
         self.setObjectName("MainWindow")
         self.setWindowModality(QtCore.Qt.WindowModality.NonModal)
         self.resize(482, 868)
@@ -807,6 +807,7 @@ class MainWindow(QMainWindow):
         self.darkModeChBox.setText(_translate("MainWindow", "다크모드"))
 
         # retranslateUi
+        '''
         ##################################################
         # UI 종료
         ##################################################
