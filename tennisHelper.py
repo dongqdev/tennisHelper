@@ -878,7 +878,7 @@ class MainWindow(QMainWindow):
                 keyTxt, ok = QInputDialog.getText(self, "프로그램 등록", "KEY:")
                 if ok:
                     if len(str(keyTxt)) == 0:
-                        QMessageBox.information(None, "에러", f"프로그램 키가 입력되지 않았습니다.")
+                        QMessageBox.information(None, "에러", f"프로그램 키가 입력되지 않았습니다")
                     else:
                         resultText = data_Handler.upsert_user_info(
                             compute_Info, str(keyTxt)
