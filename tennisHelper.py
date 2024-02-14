@@ -96,7 +96,7 @@ inputTime = 0.7
 userAuthCheck = False
 
 # 현재 애플리케이션 버전
-current_version = "2.2.6"
+current_version = "2.3.0"
 
 accessUser_Mac_Adress = [
     "84:7b:57:6a:e6:8a",
