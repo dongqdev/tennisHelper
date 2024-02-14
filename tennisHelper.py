@@ -2,7 +2,7 @@
 # UI 변환 명령어 : pyside6-uic ./tennisHelper.ui -p tennisHelper_UI.py >> UI2PY1.py
 # UI 변환 명령어 : pyside6-uic ./addAccountDialog.ui -p addAccountDialog.py >> UI2PY2.py
 # EXE 변환 명령어(MAC) : pyinstaller -w -F --icon=sejong_chn.ico -n tennisHelper tennisHelper.py
-# EXE 변환 명령어(Window) :  pyinstaller -w -F --icon=sejong_eng.ico -n tennisHelper_v tennisHelper.py
+# EXE 변환 명령어(Window) :  pyinstaller -w -F --icon=sejong_eng.ico -n 세종시_통합예약시스템_도우미 tennisHelper.py
 # UI 변환 명령어 : pyuic6 tennisHelper.ui -0 output.py
 # 아래 문구 추가
 # 상단 :
@@ -33,7 +33,7 @@ import urllib
 import requests
 
 # PYQT6
-from PyQt6 import QtCore, QtGui, QtWidgets
+from PyQt6 import QtCore, QtGui, QtWidgets, uic
 from PyQt6.QtWidgets import QApplication, QMainWindow,QWidget,QMessageBox,QDialog,QInputDialog,QVBoxLayout, QTableWidget, QTableWidgetItem, QHeaderView, QProgressDialog
 from PyQt6.QtCore import QThread,pyqtSignal,QTimer,QTime,Qt
 from PyQt6.QtGui import QFont, QBrush, QColor
@@ -506,9 +506,18 @@ class TennisScheduleWindow(QWidget):
 
 
 class MainWindow(QMainWindow):
+    '''
     def __init__(self):
         super(MainWindow, self).__init__()
         self.setupUi()  # UI 설정 함수 호출
+        # 창위치 변경
+        self.move(1350, 200)
+    '''
+    def __init__(self):
+        super(MainWindow, self).__init__()
+        uic.loadUi('tennisHelper.ui', self)
+        # 이벤트 연결
+        self.setupUi()
         # 창위치 변경
         self.move(1350, 200)
 
@@ -520,6 +529,7 @@ class MainWindow(QMainWindow):
         ##################################################
         # UI 시작
         ##################################################
+        '''
         self.setObjectName("MainWindow")
         self.setWindowModality(QtCore.Qt.WindowModality.NonModal)
         self.resize(482, 868)
@@ -800,7 +810,7 @@ class MainWindow(QMainWindow):
         ##################################################
         # UI 종료
         ##################################################
-
+        '''
         ##################################################
         # 기능 개발 시작
         ##################################################
