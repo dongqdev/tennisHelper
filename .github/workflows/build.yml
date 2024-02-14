@@ -23,12 +23,9 @@ jobs:
           pip install pyinstaller mariadb requests PyQt6 cryptography pyqtdarktheme selenium
 
       - name: Build the Application
-        run: >
-          pyinstaller -w -F 
-          --icon=icon_chn.ico 
-          --add-data "tennisHelper.ui;."
-          -n tennisHelper 
-          tennisHelper.py
+        run: |
+          pyinstaller -w -F --icon=icon_chn.ico --add-data "tennisHelper.ui;." -n tennisHelper tennisHelper.py
+      
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v2
@@ -53,8 +50,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref_name }}
-          release_name: Release ${{ github.ref_name }}
+          tag_name: v2.3.0
+          release_name: Release v2.3.0
           draft: false
           prerelease: false
           body: "New release of tennisHelper based on the latest commit in main branch"
