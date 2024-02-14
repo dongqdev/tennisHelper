@@ -66,12 +66,12 @@ jobs:
           asset_name: tennisHelper.exe
           asset_content_type: application/octet-stream
 
-      - name: Upload Release Asset (UI File)
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./dist/tennisHelper.ui
-          asset_name: tennisHelper.ui
-          asset_content_type: text/xml
+      #- name: Upload Release Asset (UI File)
+      #  uses: actions/upload-release-asset@v1
+      #  env:
+      #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #  with:
+      #    upload_url: ${{ steps.create_release.outputs.upload_url }}
+      #    asset_path: ./dist/tennisHelper.ui
+      #    asset_name: tennisHelper.ui
+      #    asset_content_type: text/xml
