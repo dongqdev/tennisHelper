@@ -18,7 +18,7 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          pip install pyinstaller
+          pip install mariadb requests PyQt6 cryptography qdarktheme selenium
 
       - name: Build the Application
         run: |
