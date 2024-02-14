@@ -25,9 +25,9 @@ jobs:
       - name: Build the Application
         run: >
           pyinstaller -w -F 
-          --icon=sejong_eng.ico 
+          --icon=icon_chn.ico 
           --add-data "tennisHelper.ui;."
-          -n 세종시_통합예약시스템_도우미 
+          -n tennisHelper 
           tennisHelper.py
 
       - name: Upload Artifacts
