@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-# UI 변환 명령어 : pyside6-uic ./tennisHelper.ui -p tennisHelper_UI.py > tennisHelper_UI.py
-# UI 변환 명령어 : pyside6-uic ./addAccountDialog.ui -p addAccountDialog.py >> UI2PY2.py
 # EXE 변환 명령어(MAC) : pyinstaller -w -F --icon=sejong_chn.ico -n tennisHelper tennisHelper.py
 # EXE 변환 명령어(Window) :  pyinstaller -w -F --icon=sejong_eng.ico -n 세종시_통합예약시스템_도우미 tennisHelper.py
 # UI 변환 명령어 : pyuic6 -o output.py tennisHelper.ui
