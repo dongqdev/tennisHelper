@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>482</width>
-    <height>868</height>
+    <width>568</width>
+    <height>853</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,7 +20,7 @@
    <widget class="QLabel" name="titleLbl">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>40</x>
       <y>10</y>
       <width>351</width>
       <height>41</height>
@@ -40,7 +40,7 @@
      <rect>
       <x>30</x>
       <y>60</y>
-      <width>431</width>
+      <width>501</width>
       <height>71</height>
      </rect>
     </property>
@@ -83,7 +83,7 @@
     <widget class="QPushButton" name="addAccountBtn">
      <property name="geometry">
       <rect>
-       <x>290</x>
+       <x>360</x>
        <y>30</y>
        <width>61</width>
        <height>31</height>
@@ -101,7 +101,7 @@
     <widget class="QPushButton" name="deleteAccountBtn">
      <property name="geometry">
       <rect>
-       <x>360</x>
+       <x>430</x>
        <y>30</y>
        <width>61</width>
        <height>31</height>
@@ -114,6 +114,25 @@
      </property>
      <property name="text">
       <string>계정삭제</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="loginBtn">
+     <property name="geometry">
+      <rect>
+       <x>290</x>
+       <y>30</y>
+       <width>61</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>8</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>로그인</string>
      </property>
     </widget>
    </widget>
@@ -135,7 +154,7 @@
      <rect>
       <x>30</x>
       <y>130</y>
-      <width>431</width>
+      <width>501</width>
       <height>181</height>
      </rect>
     </property>
@@ -206,7 +225,7 @@
       <rect>
        <x>160</x>
        <y>60</y>
-       <width>231</width>
+       <width>311</width>
        <height>26</height>
       </rect>
      </property>
@@ -216,7 +235,7 @@
       <rect>
        <x>160</x>
        <y>90</y>
-       <width>231</width>
+       <width>311</width>
        <height>26</height>
       </rect>
      </property>
@@ -226,7 +245,7 @@
       <rect>
        <x>160</x>
        <y>120</y>
-       <width>231</width>
+       <width>311</width>
        <height>26</height>
       </rect>
      </property>
@@ -249,7 +268,7 @@
       <rect>
        <x>30</x>
        <y>28</y>
-       <width>361</width>
+       <width>441</width>
        <height>23</height>
       </rect>
      </property>
@@ -281,7 +300,7 @@
      <rect>
       <x>30</x>
       <y>320</y>
-      <width>431</width>
+      <width>501</width>
       <height>181</height>
      </rect>
     </property>
@@ -352,7 +371,7 @@
       <rect>
        <x>160</x>
        <y>60</y>
-       <width>231</width>
+       <width>311</width>
        <height>26</height>
       </rect>
      </property>
@@ -362,7 +381,7 @@
       <rect>
        <x>160</x>
        <y>90</y>
-       <width>231</width>
+       <width>311</width>
        <height>26</height>
       </rect>
      </property>
@@ -372,7 +391,7 @@
       <rect>
        <x>160</x>
        <y>120</y>
-       <width>231</width>
+       <width>311</width>
        <height>26</height>
       </rect>
      </property>
@@ -408,7 +427,7 @@
       <rect>
        <x>30</x>
        <y>30</y>
-       <width>361</width>
+       <width>441</width>
        <height>23</height>
       </rect>
      </property>
@@ -438,9 +457,9 @@
    <widget class="QGroupBox" name="noticeGb">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>530</y>
-      <width>431</width>
+      <x>0</x>
+      <y>520</y>
+      <width>531</width>
       <height>161</height>
      </rect>
     </property>
@@ -564,9 +583,9 @@
    <widget class="QLabel" name="coutionLbl">
     <property name="geometry">
      <rect>
-      <x>230</x>
+      <x>260</x>
       <y>810</y>
-      <width>231</width>
+      <width>271</width>
       <height>20</height>
      </rect>
     </property>
@@ -588,7 +607,7 @@
      <rect>
       <x>30</x>
       <y>790</y>
-      <width>421</width>
+      <width>501</width>
       <height>20</height>
      </rect>
     </property>
@@ -596,30 +615,12 @@
      <enum>Qt::Horizontal</enum>
     </property>
    </widget>
-   <widget class="QPushButton" name="loginBtn">
-    <property name="geometry">
-     <rect>
-      <x>40</x>
-      <y>705</y>
-      <width>181</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>13</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>로그인</string>
-    </property>
-   </widget>
    <widget class="QPushButton" name="autoReserveBtn">
     <property name="geometry">
      <rect>
       <x>250</x>
-      <y>750</y>
-      <width>91</width>
+      <y>700</y>
+      <width>121</width>
       <height>41</height>
      </rect>
     </property>
@@ -635,9 +636,9 @@
    <widget class="QPushButton" name="selfReserveBtn">
     <property name="geometry">
      <rect>
-      <x>250</x>
-      <y>705</y>
-      <width>181</width>
+      <x>20</x>
+      <y>700</y>
+      <width>201</width>
       <height>41</height>
      </rect>
     </property>
@@ -689,9 +690,9 @@
    <widget class="QPushButton" name="stopAutoReserveBtn">
     <property name="geometry">
      <rect>
-      <x>340</x>
-      <y>750</y>
-      <width>91</width>
+      <x>400</x>
+      <y>700</y>
+      <width>121</width>
       <height>41</height>
      </rect>
     </property>
@@ -707,8 +708,8 @@
    <widget class="QCheckBox" name="darkModeChBox">
     <property name="geometry">
      <rect>
-      <x>380</x>
-      <y>25</y>
+      <x>450</x>
+      <y>30</y>
       <width>81</width>
       <height>16</height>
      </rect>
