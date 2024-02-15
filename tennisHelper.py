@@ -532,7 +532,7 @@ class MainWindow(QMainWindow):
         self.setObjectName("MainWindow")
         self.setWindowModality(QtCore.Qt.WindowModality.NonModal)
         self.resize(568, 853)
-        self.centralwidget = QtWidgets.QWidget(parent=MainWindow)
+        self.centralwidget = QtWidgets.QWidget(parent=self)
         self.centralwidget.setObjectName("centralwidget")
         self.titleLbl = QtWidgets.QLabel(parent=self.centralwidget)
         self.titleLbl.setGeometry(QtCore.QRect(40, 10, 351, 41))
@@ -762,7 +762,7 @@ class MainWindow(QMainWindow):
         self.darkModeChBox.setGeometry(QtCore.QRect(450, 30, 81, 16))
         self.darkModeChBox.setObjectName("darkModeChBox")
         self.setCentralWidget(self.centralwidget)
-        self.statusbar = QtWidgets.QStatusBar(parent=MainWindow)
+        self.statusbar = QtWidgets.QStatusBar(parent=self)
         self.statusbar.setObjectName("statusbar")
         self.setStatusBar(self.statusbar)
 
