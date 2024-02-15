@@ -769,6 +769,43 @@ class MainWindow(QMainWindow):
         self.retranslateUi(self)
         QtCore.QMetaObject.connectSlotsByName(self)
 
+    def retranslateUi(self, MainWindow):
+        _translate = QtCore.QCoreApplication.translate
+        self.setWindowTitle(_translate("MainWindow", "세종시 통합 예약 시스템 도우미 "))
+        self.titleLbl.setText(_translate("MainWindow", "세종시 통합 예약 시스템 도우미"))
+        self.accountGb.setTitle(_translate("MainWindow", "계정정보"))
+        self.idLbl.setText(_translate("MainWindow", "아이디 : "))
+        self.addAccountBtn.setText(_translate("MainWindow", "계정등록"))
+        self.deleteAccountBtn.setText(_translate("MainWindow", "계정삭제"))
+        self.loginBtn.setText(_translate("MainWindow", "로그인"))
+        self.reserve1Gb.setTitle(_translate("MainWindow", "예약정보 1"))
+        self.date1Lbl.setText(_translate("MainWindow", "날 짜 : "))
+        self.time1Lbl.setText(_translate("MainWindow", "시 간 : "))
+        self.tennisPlace1Lbl.setText(_translate("MainWindow", "테니스장 : "))
+        self.reserveYNLbl1.setText(_translate("MainWindow", "예약가능 여부  : "))
+        self.reserveChkBtn1.setText(_translate("MainWindow", "예약가능 여부 확인"))
+        self.reserve2Gb.setTitle(_translate("MainWindow", "예약정보 2"))
+        self.date2Lbl.setText(_translate("MainWindow", "날 짜 : "))
+        self.time2Lbl.setText(_translate("MainWindow", "시 간 : "))
+        self.tennisPlace2Lbl.setText(_translate("MainWindow", "테니스장 : "))
+        self.reserveYNLbl2.setText(_translate("MainWindow", "예약가능 여부  : "))
+        self.reserveChkBtn2.setText(_translate("MainWindow", "예약가능 여부 확인"))
+        self.noticeGb.setTitle(_translate("MainWindow", "이용안내"))
+        self.noticeLbl4.setText(_translate("MainWindow", "- 한개 예약시, 예약정보 1만 설정,두개 예약시, 예약정보1,2 모두 작성"))
+        self.noticeLbl1.setText(_translate("MainWindow", "- 초기 프로그램 실행 시, 계정등록 후 로그인 및 예약하기 진행"))
+        self.noticeLbl5.setText(_translate("MainWindow", "- 로그인 버튼을 클릭하여 로그인 후, 예약하기 버튼을 눌러서 예약"))
+        self.noticeLbl6.setText(_translate("MainWindow", "- 예약시간 설정 후, 자동예약하기 클릭시 설정된 시간에 자동으로 예약"))
+        self.noticeLbl8_2.setText(
+            _translate("MainWindow", "- data.dat, data.dat.hash, key.key 파일 변경 및  삭제 시 계정 재등록 필요"))
+        self.noticeLbl8_3.setText(_translate("MainWindow", "- 다정동과 전의생활공원의 경우, 시간이 다른 구장과 다름 예약시 유의"))
+        self.coutionLbl.setText(_translate("MainWindow", "* 부정 예약(매크로)으로 인한 불이익 발생시 책임지지 않습니다."))
+        self.autoReserveBtn.setText(_translate("MainWindow", "자동예약시작"))
+        self.selfReserveBtn.setText(_translate("MainWindow", "예약하기"))
+        self.timeSetLbl.setText(_translate("MainWindow", "예약시간 : "))
+        self.currentTimeLbl.setText(_translate("MainWindow", "현재시간 : "))
+        self.stopAutoReserveBtn.setText(_translate("MainWindow", "자동예약중지"))
+        self.darkModeChBox.setText(_translate("MainWindow", "다크모드"))
+
         # retranslateUi
 
         ##################################################
